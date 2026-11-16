@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="原神表情包">
+  <link rel="apple-touch-icon" href="icon.png">
+  <link rel="icon" type="image/png" href="icon.png">
+  <title>原神專屬表情包庫</title>
+  <style>
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    body { font-family: -apple-system, sans-serif; background: #14161f; color: #f3e5c8; margin: 0; padding: calc(16px + env(safe-area-inset-top)) 12px 110px; }
+    header { text-align: center; margin-bottom: 12px; }
+    h1 { font-size: 20px; margin: 0 0 4px; }
+    .subtitle { font-size: 12px; color: #9aa0b8; margin: 0 0 10px; }
+    .top-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; margin-bottom: 12px; }
+    .action-pill { background: #252a3c; color: #f3e5c8; border: 1px solid #d3bc8e; padding: 6px 11px; border-radius: 20px; font-size: 12px; font-weight: bold; text-decoration: none; cursor: pointer; }
+    .filter-box { display: flex; gap: 8px; margin-bottom: 14px; position: sticky; top: 8px; z-index: 50; background: rgba(20, 22, 31, 0.92); padding: 6px 0; }
+    .search-input, .folder-select { background: #1e2230; color: #f3e5c8; border: 1.5px solid #d3bc8e; border-radius: 12px; padding: 9px 12px; font-size: 14px; outline: none; }
+    .search-input { width: 40%; }
+    .folder-select { width: 60%; font-weight: bold; }
+    .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+    .card { position: relative; background: #1e2230; border-radius: 14px; aspect-ratio: 1; overflow: hidden; border: 2.5px solid #2c3246; cursor: pointer; }
+    .card.selected { border-color: #d3bc8e; background: #282d40; }
+    .card img { width: 100%; height: 100%; object-fit: contain; padding: 6px; display: block; }
+    .check-circle { position: absolute; top: 6px; right: 6px; width: 24px; height: 24px; border-radius: 50%; background: rgba(20, 22, 31, 0.65); border: 2px solid rgba(255, 255, 255, 0.7); display: flex; align-items: center; justify-content: center; }
+    .card.selected .check-circle { background: #d3bc8e; border-color: #d3bc8e; }
+    .check-circle::after { content: "✓"; color: #14161f; font-size: 14px; font-weight: 900; opacity: 0; }
+    .card.selected .check-circle::after { opacity: 1; }
+    .modal { display: none; position: fixed; inset: 0; background: rgba(0, 0, 0, 0.85); z-index: 200; padding: 20px; flex-direction: column; align-items: center; justify-content: center; }
+    .modal.show { display: flex; }
+    .modal img { max-width: 100%; max-height: 75vh; border-radius: 12px; border: 2px solid #d3bc8e; }
+    .modal-close { margin-top: 16px; background: #d3bc8e; color: #14161f; padding: 10px 28px; border-radius: 20px; font-weight: bold; border: none; font-size: 15px; }
+    .status-msg { grid-column: 1 / -1; text-align: center; color: #9aa0b8; padding: 40px 10px; font-size: 14px; }
+    .bottom-bar { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(24, 27, 38, 0.95); border-top: 1px solid #2c3246; padding: 12px 16px calc(12px + env(safe-area-inset-bottom)); display: flex; justify-content: space-between; align-items: center; z-index: 100; }
+    .select-info { font-size: 14px; font-weight: bold; }
+    .btn-group { display: flex; gap: 8px; }
+    button { border: none; border-radius: 20px; padding: 10px 16px; font-size: 14px; font-weight: bold; cursor: pointer; }
+    button:disabled { opacity: 0.35; }
+    .btn-clear { background: #2c3246; color: #ccc; }
+    .btn-download { background: #d3bc8e; color: #14161f; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>✦ 原神表情包圖庫 ✦</h1>
+    <p class="subtitle" id="totalCount">正在載入分類資料夾...</p>
+    <div class="top-actions">
+      <div class="action-pill" onclick="openModal('install.png')">📲 1.變成桌面App</div>
+      <a id="installShortcutLink" class="action-pill" href="#" target="_blank">⚡ 2.安裝接收捷徑</a>
+      <div class="action-pill" onclick="openModal('guide.png')">📖 3.看貼圖教學</div>
+    </div>
+  </header>
+
+  <div class="filter-box">
+    <input type="text" id="folderSearch" class="search-input" placeholder="🔍 搜畫作輯數..." oninput="filterFolderOptions()">
+    <select id="folderSelect" class="folder-select" onchange="loadImagesInFolder(this.value)">
+      <option value="">載入分類中...</option>
+    </select>
+  </div>
+
+  <main class="grid" id="gallery"><div class="status-msg">資料載入中...</div></main>
+
+  <div class="modal" id="guideModal" onclick="closeModal()">
+    <img id="modalImage" src="" alt="使用教學" onclick="event.stopPropagation()">
+    <button class="modal-close" onclick="closeModal()">我知道了</button>
+  </div>
+
+  <footer class="bottom-bar">
+    <span class="select-info" id="selectedCount">已選 0 張</span>
+    <div class="btn-group">
+      <button class="btn-clear" id="clearBtn" disabled onclick="clearSelection()">取消全選</button>
+      <button class="btn-download" id="downloadBtn" disabled onclick="downloadSelected()">下載到相片</button>
+    </div>
+  </footer>
+
+  <script>
+    // 【請填入你的捷徑 iCloud 連結】
+    const SHORTCUT_ICLOUD_URL = "https://www.icloud.com/shortcuts/379f4f786fda49e58fb70cd6b5c405cf";
+    
+    const ROOT_FOLDER     = "categories";
+    const GITHUB_USERNAME = "cxuan7701-rgb";
+    const REPO_NAME       = "genshin-stickers";
+    const SHORTCUT_NAME   = "一鍵下載貼圖";
+
+    document.getElementById("installShortcutLink").href = SHORTCUT_ICLOUD_URL;
+    const selectedUrls = new Set();
+    let allFolders = new Array();
+    const galleryEl = document.getElementById("gallery");
+    const folderSelectEl = document.getElementById("folderSelect");
+
+    function openModal(fileName) { document.getElementById("modalImage").src = fileName; document.getElementById("guideModal").classList.add("show"); }
+    function closeModal() { document.getElementById("guideModal").classList.remove("show"); }
+
+    function getApiBase() {
+      const host = "api." + "github.com";
+      return `https://${host}/repos/${GITHUB_USERNAME}/${REPO_NAME}/contents/${ROOT_FOLDER}`;
+    }
+
+    async function fetchFolderList() {
+      try {
+        const res = await fetch(getApiBase());
+        if (!res.ok) throw new Error(`找不到 ${ROOT_FOLDER} 資料夾，請確認已將 53 個小資料夾放入並上傳至 GitHub。`);
+        const items = await res.json();
+        allFolders = items.filter(i => i.type === "dir").map(d => d.name);
+        if (allFolders.length === 0) { galleryEl.innerHTML = `<div class="status-msg">${ROOT_FOLDER} 裡面還沒有小資料夾喔！</div>`; return; }
+        renderFolderDropdown(allFolders);
+        loadImagesInFolder(allFolders.at(0));
+      } catch (e) { galleryEl.innerHTML = `<div class="status-msg">⚠️ ${e.message}</div>`; }
+    }
+
+    function renderFolderDropdown(folders) {
+      folderSelectEl.innerHTML = "";
+      folders.forEach(name => {
+        const opt = document.createElement("option");
+        opt.value = name; opt.innerText = `📁 ${name}`;
+        folderSelectEl.appendChild(opt);
+      });
+    }
+
+    function filterFolderOptions() {
+      const kw = document.getElementById("folderSearch").value.trim().toLowerCase();
+      const filtered = allFolders.filter(n => n.toLowerCase().includes(kw));
+      renderFolderDropdown(filtered);
+      if (filtered.length > 0) loadImagesInFolder(filtered.at(0));
+    }
+
+    async function loadImagesInFolder(folderName) {
+      if (!folderName) return;
+      galleryEl.innerHTML = `<div class="status-msg">正在讀取「${folderName}」...</div>`;
+      const apiUrl = `${getApiBase()}/${encodeURIComponent(folderName)}`;
+      try {
+        const res = await fetch(apiUrl);
+        if (!res.ok) throw new Error("無法讀取資料夾內容");
+        const files = await res.json();
+        const imgs = files.filter(f => f.type === "file" && /\.(png|jpe?g|gif|webp)$/i.test(f.name));
+        galleryEl.innerHTML = "";
+        document.getElementById("totalCount").innerText = `共 ${allFolders.length} 輯 ｜ 本輯共 ${imgs.length} 張`;
+        imgs.forEach(f => {
+          const card = document.createElement("div");
+          card.className = "card" + (selectedUrls.has(f.download_url) ? " selected" : "");
+          card.innerHTML = `<img src="${f.download_url}" loading="lazy"><div class="check-circle"></div>`;
+          card.onclick = () => {
+            selectedUrls.has(f.download_url) ? (selectedUrls.delete(f.download_url), card.classList.remove("selected")) : (selectedUrls.add(f.download_url), card.classList.add("selected"));
+            document.getElementById("selectedCount").innerText = `已選 ${selectedUrls.size} 張`;
+            document.getElementById("clearBtn").disabled = document.getElementById("downloadBtn").disabled = (selectedUrls.size === 0);
+          };
+          galleryEl.appendChild(card);
+        });
+      } catch (e) { galleryEl.innerHTML = `<div class="status-msg">⚠️ ${e.message}</div>`; }
+    }
+
+    function clearSelection() {
+      selectedUrls.clear();
+      document.querySelectorAll(".card.selected").forEach(c => c.classList.remove("selected"));
+      document.getElementById("selectedCount").innerText = "已選 0 張";
+      document.getElementById("clearBtn").disabled = document.getElementById("downloadBtn").disabled = true;
+    }
+
+    function downloadSelected() {
+      if (selectedUrls.size === 0) return;
+      const safeUrls = Array.from(selectedUrls).map(u => u.replace(/\(/g, "%28").replace(/\)/g, "%29"));
+      window.location.href = `shortcuts://run-shortcut?name=${encodeURIComponent(SHORTCUT_NAME)}&input=text&text=${encodeURIComponent(safeUrls.join("\n"))}`;
+    }
+
+    fetchFolderList();
+  </script>
+</body>
+</html>
