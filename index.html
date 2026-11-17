@@ -22,9 +22,7 @@
         </div>
 
         <h1 data-i18n="title">原神貼圖圖庫</h1>
-        <p class="subtitle" data-i18n="subtitle">
-            收藏喜歡的角色貼圖
-        </p>
+        <p class="subtitle" data-i18n="subtitle">收藏喜歡的角色貼圖</p>
 
         <div class="top-actions">
             <button class="action-pill" id="homeBtn" data-i18n="home">
@@ -40,52 +38,94 @@
     </header>
 
     <main class="main-container">
-        <section class="category-section">
-            <h2 data-i18n="categories">貼圖分類</h2>
-            <div id="categoryList" class="category-list">
+
+        <section class="toolbar">
+            <div class="category-control">
+                <label for="categorySelect" data-i18n="categoryLabel">
+                    選擇系列
+                </label>
+                <select id="categorySelect" class="category-select">
+                    <option value="" data-i18n="loading">載入中...</option>
+                </select>
+            </div>
+
+            <div class="search-control">
+                <input
+                    type="search"
+                    id="searchInput"
+                    data-i18n-placeholder="searchPlaceholder"
+                    placeholder="搜尋貼圖名稱..."
+                >
+            </div>
+        </section>
+
+        <section class="gallery-section">
+            <div class="gallery-heading">
+                <div>
+                    <h2 id="folderTitle">第一輯</h2>
+                    <p id="imageCount" class="image-count">載入中...</p>
+                </div>
+            </div>
+
+            <div id="imageGrid" class="image-grid">
                 <div class="loading" data-i18n="loading">載入中...</div>
             </div>
         </section>
 
-        <section id="gallerySection" class="gallery-section hidden">
-            <div class="gallery-header">
-                <button id="backBtn" class="back-button" data-i18n="back">
-                    ← 返回分類
-                </button>
-                <h2 id="folderTitle">分類名稱</h2>
-            </div>
-
-            <div id="imageGrid" class="image-grid"></div>
-        </section>
     </main>
+
+    <footer class="selection-bar">
+        <div class="selection-info">
+            <span data-i18n="selectedLabel">已選取</span>
+            <strong id="selectedCount">0</strong>
+            <span data-i18n="selectedUnit">張</span>
+        </div>
+
+        <div class="selection-actions">
+            <button id="selectAllBtn" class="select-all-button" disabled data-i18n="selectAll">
+                ☑ 一鍵全選
+            </button>
+
+            <button id="clearSelectionBtn" class="clear-button" disabled data-i18n="clear">
+                取消全選
+            </button>
+
+            <button id="downloadSelectedBtn" class="download-button" disabled data-i18n="download">
+                ⚡ 確定下載
+            </button>
+        </div>
+    </footer>
 
     <div id="toast" class="toast"></div>
 
-    <div id="imageModal" class="image-modal hidden">
-        <button id="closeModal" class="modal-close">✕</button>
-        <img id="modalImage" src="" alt="貼圖預覽">
-        <button id="downloadBtn" class="download-button" data-i18n="download">
-            ⚡ 使用捷徑下載
-        </button>
+    <div id="guideModal" class="guide-modal hidden">
+        <div class="guide-content">
+            <button id="closeGuideBtn" class="modal-close">✕</button>
+            <h2 data-i18n="guideTitle">使用教學</h2>
+            <img src="guide.png" alt="貼圖使用教學">
+        </div>
     </div>
 
     <script>
-        // ==============================
+        // =====================================
         // GitHub 設定
-        // ==============================
+        // =====================================
 
         const GITHUB_USERNAME = "cxuan7701-rgb";
         const REPO_NAME = "genshin-stickers";
         const BRANCH_NAME = "main";
 
+        const SHORTCUT_NAME = "一鍵下載貼圖";
+
         const SHORTCUT_URL =
             "https://www.icloud.com/shortcuts/379f4f786fda49e58fb70cd6b5c405cf";
 
-        const SHORTCUT_NAME = "一鍵下載貼圖";
+        const API_BASE =
+            `https://api.github.com/repos/${GITHUB_USERNAME}/${REPO_NAME}/contents`;
 
-        // ==============================
+        // =====================================
         // 多語言設定
-        // ==============================
+        // =====================================
 
         const translations = {
             "zh-TW": {
@@ -94,14 +134,24 @@
                 home: "📲 桌面 App",
                 shortcut: "⚡ 安裝捷徑",
                 guide: "📖 貼圖教學",
-                categories: "貼圖分類",
+                categoryLabel: "選擇系列",
                 loading: "載入中...",
-                back: "← 返回分類",
-                download: "⚡ 使用捷徑下載",
+                searchPlaceholder: "搜尋貼圖名稱...",
+                selectedLabel: "已選取",
+                selectedUnit: "張",
+                selectAll: "☑ 一鍵全選",
+                clear: "取消全選",
+                download: "⚡ 確定下載",
                 empty: "目前沒有圖片",
                 error: "載入失敗，請稍後再試",
-                copied: "已準備好下載",
-                select: "選擇貼圖"
+                guideTitle: "使用教學",
+                noSelection: "請先選擇貼圖",
+                allSelected: "目前系列已全選",
+                selectedToast: "已選取所有貼圖",
+                cleared: "已取消所有選取",
+                downloading: "正在開啟捷徑...",
+                searchEmpty: "找不到符合的貼圖",
+                loadFailed: "無法載入 GitHub 資料"
             },
             "zh-CN": {
                 title: "原神表情包图库",
@@ -109,14 +159,24 @@
                 home: "📲 桌面应用",
                 shortcut: "⚡ 安装捷径",
                 guide: "📖 表情包教程",
-                categories: "表情包分类",
+                categoryLabel: "选择系列",
                 loading: "加载中...",
-                back: "← 返回分类",
-                download: "⚡ 使用捷径下载",
+                searchPlaceholder: "搜索表情包名称...",
+                selectedLabel: "已选择",
+                selectedUnit: "张",
+                selectAll: "☑ 一键全选",
+                clear: "取消全选",
+                download: "⚡ 确认下载",
                 empty: "目前没有图片",
                 error: "加载失败，请稍后再试",
-                copied: "已准备好下载",
-                select: "选择表情包"
+                guideTitle: "使用教程",
+                noSelection: "请先选择表情包",
+                allSelected: "当前系列已全选",
+                selectedToast: "已选择所有表情包",
+                cleared: "已取消所有选择",
+                downloading: "正在打开快捷指令...",
+                searchEmpty: "找不到符合的表情包",
+                loadFailed: "无法加载 GitHub 数据"
             },
             "en": {
                 title: "Genshin Stickers",
@@ -124,14 +184,24 @@
                 home: "📲 Home App",
                 shortcut: "⚡ Shortcut",
                 guide: "📖 Guide",
-                categories: "Categories",
+                categoryLabel: "Collection",
                 loading: "Loading...",
-                back: "← Back",
-                download: "⚡ Download with Shortcut",
+                searchPlaceholder: "Search stickers...",
+                selectedLabel: "Selected",
+                selectedUnit: "",
+                selectAll: "☑ Select All",
+                clear: "Clear Selection",
+                download: "⚡ Confirm Download",
                 empty: "No images found",
                 error: "Loading failed. Please try again.",
-                copied: "Ready to download",
-                select: "Select a sticker"
+                guideTitle: "User Guide",
+                noSelection: "Please select stickers first",
+                allSelected: "This collection is fully selected",
+                selectedToast: "All stickers selected",
+                cleared: "Selection cleared",
+                downloading: "Opening Shortcut...",
+                searchEmpty: "No matching stickers",
+                loadFailed: "Unable to load GitHub data"
             },
             "ja": {
                 title: "原神スタンプギャラリー",
@@ -139,14 +209,24 @@
                 home: "📲 ホーム追加",
                 shortcut: "⚡ ショートカット",
                 guide: "📖 使い方",
-                categories: "カテゴリー",
+                categoryLabel: "シリーズ選択",
                 loading: "読み込み中...",
-                back: "← 戻る",
-                download: "⚡ ショートカットで保存",
+                searchPlaceholder: "スタンプを検索...",
+                selectedLabel: "選択中",
+                selectedUnit: "枚",
+                selectAll: "☑ すべて選択",
+                clear: "選択解除",
+                download: "⚡ ダウンロード確定",
                 empty: "画像がありません",
                 error: "読み込みに失敗しました",
-                copied: "ダウンロード準備完了",
-                select: "スタンプを選択"
+                guideTitle: "使い方",
+                noSelection: "スタンプを選択してください",
+                allSelected: "このシリーズはすべて選択済みです",
+                selectedToast: "すべて選択しました",
+                cleared: "選択を解除しました",
+                downloading: "ショートカットを起動中...",
+                searchEmpty: "該当するスタンプがありません",
+                loadFailed: "GitHubデータを読み込めません"
             },
             "ko": {
                 title: "원신 스티커 갤러리",
@@ -154,74 +234,118 @@
                 home: "📲 홈 화면 추가",
                 shortcut: "⚡ 단축어",
                 guide: "📖 사용법",
-                categories: "카테고리",
+                categoryLabel: "시리즈 선택",
                 loading: "불러오는 중...",
-                back: "← 돌아가기",
-                download: "⚡ 단축어로 다운로드",
+                searchPlaceholder: "스티커 검색...",
+                selectedLabel: "선택됨",
+                selectedUnit: "개",
+                selectAll: "☑ 전체 선택",
+                clear: "선택 취소",
+                download: "⚡ 다운로드 확인",
                 empty: "이미지가 없습니다",
                 error: "불러오기에 실패했습니다",
-                copied: "다운로드 준비 완료",
-                select: "스티커 선택"
+                guideTitle: "사용 방법",
+                noSelection: "스티커를 먼저 선택하세요",
+                allSelected: "현재 시리즈가 모두 선택되었습니다",
+                selectedToast: "모든 스티커를 선택했습니다",
+                cleared: "선택을 취소했습니다",
+                downloading: "단축어를 실행하는 중...",
+                searchEmpty: "일치하는 스티커가 없습니다",
+                loadFailed: "GitHub 데이터를 불러올 수 없습니다"
             }
         };
+
+        // =====================================
+        // 狀態
+        // =====================================
 
         let currentLanguage =
             localStorage.getItem("genshinLanguage") || "zh-TW";
 
-        let currentFolder = "";
-        let selectedImageUrl = "";
+        let allFolders = [];
+        let currentFolder = null;
+        let currentImages = [];
 
-        const categoryList = document.getElementById("categoryList");
+        // 用 Set 保存選取的圖片網址
+        // 切換分類時不會清除已選取的圖片
+        const selectedUrls = new Set();
+
+        // =====================================
+        // DOM
+        // =====================================
+
+        const languageSelect = document.getElementById("languageSelect");
+        const categorySelect = document.getElementById("categorySelect");
+        const searchInput = document.getElementById("searchInput");
         const imageGrid = document.getElementById("imageGrid");
-        const gallerySection = document.getElementById("gallerySection");
         const folderTitle = document.getElementById("folderTitle");
-        const imageModal = document.getElementById("imageModal");
-        const modalImage = document.getElementById("modalImage");
+        const imageCount = document.getElementById("imageCount");
+
+        const selectedCount = document.getElementById("selectedCount");
+        const selectAllBtn = document.getElementById("selectAllBtn");
+        const clearSelectionBtn = document.getElementById("clearSelectionBtn");
+        const downloadSelectedBtn = document.getElementById("downloadSelectedBtn");
+
         const toast = document.getElementById("toast");
 
-        // ==============================
+        // =====================================
         // 語言切換
-        // ==============================
+        // =====================================
+
+        function t(key) {
+            return translations[currentLanguage][key] ||
+                translations["zh-TW"][key] ||
+                key;
+        }
 
         function applyLanguage() {
-            const language = translations[currentLanguage];
-
             document.documentElement.lang = currentLanguage;
 
             document.querySelectorAll("[data-i18n]").forEach(element => {
                 const key = element.dataset.i18n;
-
-                if (language[key]) {
-                    element.textContent = language[key];
-                }
+                element.textContent = t(key);
             });
 
-            document.getElementById("languageSelect").value =
-                currentLanguage;
+            document.querySelectorAll("[data-i18n-placeholder]").forEach(element => {
+                const key = element.dataset.i18nPlaceholder;
+                element.placeholder = t(key);
+            });
 
-            if (currentFolder) {
-                folderTitle.textContent = currentFolder;
-            }
+            languageSelect.value = currentLanguage;
+
+            updateSelectionUI();
+            updateImageCount();
         }
 
-        document.getElementById("languageSelect")
-            .addEventListener("change", event => {
-                currentLanguage = event.target.value;
+        languageSelect.addEventListener("change", event => {
+            currentLanguage = event.target.value;
 
-                localStorage.setItem(
-                    "genshinLanguage",
-                    currentLanguage
-                );
+            localStorage.setItem("genshinLanguage", currentLanguage);
 
-                applyLanguage();
-            });
+            applyLanguage();
+            renderImages();
+        });
 
-        // ==============================
+        // =====================================
         // GitHub API
-        // ==============================
+        // =====================================
 
-        const API_BASE =
-            `https://api.github.com/repos/${GITHUB_USERNAME}/${REPO_NAME}/contents`;
+        async function getGitHubContents(path) {
+            const encodedPath = path
+                .split("/")
+                .map(part => encodeURIComponent(part))
+                .join("/");
+
+            const response = await fetch(
+                `${API_BASE}/${encodedPath}?ref=${BRANCH_NAME}`
+            );
+
+            if (!response.ok) {
+                throw new Error(`GitHub API Error: ${response.status}`);
+            }
+
+            return await response.json();
+        }
 
         function getRawUrl(path) {
             const encodedPath = path
@@ -232,201 +356,349 @@
             return `https://raw.githubusercontent.com/${GITHUB_USERNAME}/${REPO_NAME}/${BRANCH_NAME}/${encodedPath}`;
         }
 
-        async function getGitHubContents(path = "categories") {
-            const url = `${API_BASE}/${path
-                .split("/")
-                .map(encodeURIComponent)
-                .join("/")}?ref=${BRANCH_NAME}`;
-
-            const response = await fetch(url);
-
-            if (!response.ok) {
-                throw new Error("GitHub API Error");
-            }
-
-            return await response.json();
-        }
-
-        // ==============================
-        // 顯示分類
-        // ==============================
+        // =====================================
+        // 載入所有分類
+        // =====================================
 
         async function loadCategories() {
-            categoryList.innerHTML =
-                `<div class="loading">${translations[currentLanguage].loading}</div>`;
+            categorySelect.innerHTML =
+                `<option value="">${t("loading")}</option>`;
 
             try {
-                const folders = await getGitHubContents("categories");
+                const contents = await getGitHubContents("categories");
 
-                categoryList.innerHTML = "";
-
-                const categories = folders.filter(item =>
+                allFolders = contents.filter(item =>
                     item.type === "dir"
                 );
 
-                if (categories.length === 0) {
-                    categoryList.textContent =
-                        translations[currentLanguage].empty;
+                if (allFolders.length === 0) {
+                    categorySelect.innerHTML =
+                        `<option value="">${t("empty")}</option>`;
                     return;
                 }
 
-                categories.forEach(folder => {
-                    const button = document.createElement("button");
+                categorySelect.innerHTML = "";
 
-                    button.className = "category-card";
-                    button.textContent = folder.name;
+                allFolders.forEach((folder, index) => {
+                    const option = document.createElement("option");
 
-                    button.addEventListener("click", () => {
-                        loadFolder(folder.path);
-                    });
+                    option.value = folder.path;
+                    option.textContent = folder.name;
 
-                    categoryList.appendChild(button);
+                    categorySelect.appendChild(option);
                 });
 
+                // 開啟網頁時直接顯示第一輯
+                currentFolder = allFolders[0];
+                categorySelect.value = currentFolder.path;
+
+                await loadImagesInFolder(currentFolder);
+
             } catch (error) {
-                categoryList.textContent =
-                    translations[currentLanguage].error;
+                categorySelect.innerHTML =
+                    `<option value="">${t("error")}</option>`;
+
+                imageGrid.innerHTML =
+                    `<div class="empty-message">${t("loadFailed")}</div>`;
+
+                console.error(error);
             }
         }
 
-        // ==============================
-        // 顯示分類圖片
-        // ==============================
+        // =====================================
+        // 切換分類
+        // =====================================
 
-        async function loadFolder(path) {
-            currentFolder = path.split("/").pop();
+        categorySelect.addEventListener("change", async event => {
+            const folder = allFolders.find(item =>
+                item.path === event.target.value
+            );
 
-            gallerySection.classList.remove("hidden");
-            document.querySelector(".category-section").classList.add("hidden");
+            if (!folder) return;
 
-            folderTitle.textContent = currentFolder;
+            currentFolder = folder;
+            searchInput.value = "";
+
+            await loadImagesInFolder(folder);
+        });
+
+        // =====================================
+        // 載入分類圖片
+        // =====================================
+
+        async function loadImagesInFolder(folder) {
+            currentFolder = folder;
+
+            folderTitle.textContent = folder.name;
 
             imageGrid.innerHTML =
-                `<div class="loading">${translations[currentLanguage].loading}</div>`;
+                `<div class="loading">${t("loading")}</div>`;
 
             try {
-                const files = await getGitHubContents(path);
+                const contents = await getGitHubContents(folder.path);
 
-                imageGrid.innerHTML = "";
-
-                const images = files.filter(file =>
+                currentImages = contents.filter(file =>
                     file.type === "file" &&
                     /\.(png|jpe?g|gif|webp)$/i.test(file.name)
                 );
 
-                if (images.length === 0) {
-                    imageGrid.textContent =
-                        translations[currentLanguage].empty;
-                    return;
-                }
-
-                images.forEach(file => {
-                    const imageUrl = getRawUrl(file.path);
-
-                    const card = document.createElement("div");
-                    card.className = "image-card";
-
-                    const image = document.createElement("img");
-                    image.src = imageUrl;
-                    image.alt = file.name;
-                    image.loading = "lazy";
-
-                    image.addEventListener("click", () => {
-                        openImage(imageUrl);
-                    });
-
-                    card.appendChild(image);
-                    imageGrid.appendChild(card);
-                });
+                renderImages();
 
             } catch (error) {
-                imageGrid.textContent =
-                    translations[currentLanguage].error;
+                imageGrid.innerHTML =
+                    `<div class="empty-message">${t("error")}</div>`;
+
+                console.error(error);
             }
         }
 
-        // ==============================
-        // 圖片預覽與下載
-        // ==============================
+        // =====================================
+        // 顯示圖片
+        // =====================================
 
-        function openImage(url) {
-            selectedImageUrl = url;
-            modalImage.src = url;
-            imageModal.classList.remove("hidden");
-        }
+        function renderImages() {
+            imageGrid.innerHTML = "";
 
-        function closeImage() {
-            imageModal.classList.add("hidden");
-            modalImage.src = "";
-        }
+            const keyword = searchInput.value
+                .trim()
+                .toLowerCase();
 
-        document.getElementById("closeModal")
-            .addEventListener("click", closeImage);
+            const filteredImages = currentImages.filter(file =>
+                file.name.toLowerCase().includes(keyword)
+            );
 
-        imageModal.addEventListener("click", event => {
-            if (event.target === imageModal) {
-                closeImage();
+            if (filteredImages.length === 0) {
+                imageGrid.innerHTML =
+                    `<div class="empty-message">${t("searchEmpty")}</div>`;
+
+                updateImageCount(0);
+                updateSelectionUI();
+                return;
             }
+
+            filteredImages.forEach(file => {
+                const imageUrl = getRawUrl(file.path);
+                const isSelected = selectedUrls.has(imageUrl);
+
+                const card = document.createElement("button");
+                card.type = "button";
+                card.className = "image-card";
+
+                if (isSelected) {
+                    card.classList.add("selected");
+                }
+
+                card.setAttribute("aria-pressed", String(isSelected));
+                card.title = file.name;
+
+                const image = document.createElement("img");
+                image.src = imageUrl;
+                image.alt = file.name;
+                image.loading = "lazy";
+
+                image.onerror = () => {
+                    image.alt = "Image failed to load";
+                    card.classList.add("image-error");
+                };
+
+                const checkmark = document.createElement("span");
+                checkmark.className = "selection-check";
+                checkmark.textContent = "✓";
+
+                const filename = document.createElement("span");
+                filename.className = "image-filename";
+                filename.textContent = file.name;
+
+                card.appendChild(image);
+                card.appendChild(checkmark);
+                card.appendChild(filename);
+
+                card.addEventListener("click", () => {
+                    toggleImageSelection(imageUrl);
+                });
+
+                imageGrid.appendChild(card);
+            });
+
+            updateImageCount(filteredImages.length);
+            updateSelectionUI();
+        }
+
+        // =====================================
+        // 搜尋圖片
+        // =====================================
+
+        searchInput.addEventListener("input", () => {
+            renderImages();
         });
 
-        document.getElementById("downloadBtn")
-            .addEventListener("click", () => {
-                if (!selectedImageUrl) return;
+        // =====================================
+        // 選取 / 取消單張圖片
+        // =====================================
 
-                const shortcutLink =
-                    `${SHORTCUT_URL}?url=${encodeURIComponent(selectedImageUrl)}`;
+        function toggleImageSelection(url) {
+            if (selectedUrls.has(url)) {
+                selectedUrls.delete(url);
+            } else {
+                selectedUrls.add(url);
+            }
 
-                window.location.href = shortcutLink;
+            renderImages();
+        }
+
+        // =====================================
+        // 一鍵全選
+        // =====================================
+
+        selectAllBtn.addEventListener("click", () => {
+            const keyword = searchInput.value
+                .trim()
+                .toLowerCase();
+
+            const visibleImages = currentImages.filter(file =>
+                file.name.toLowerCase().includes(keyword)
+            );
+
+            visibleImages.forEach(file => {
+                selectedUrls.add(getRawUrl(file.path));
             });
 
-        // ==============================
-        // 返回分類
-        // ==============================
+            renderImages();
+            showToast(t("selectedToast"));
+        });
 
-        document.getElementById("backBtn")
-            .addEventListener("click", () => {
-                currentFolder = "";
+        // =====================================
+        // 取消全選
+        // =====================================
 
-                gallerySection.classList.add("hidden");
-                document.querySelector(".category-section")
-                    .classList.remove("hidden");
-            });
+        clearSelectionBtn.addEventListener("click", () => {
+            selectedUrls.clear();
 
-        // ==============================
-        // 頂部按鈕
-        // ==============================
+            renderImages();
+            showToast(t("cleared"));
+        });
+
+        // =====================================
+        // 更新選取狀態
+        // =====================================
+
+        function updateSelectionUI() {
+            const count = selectedUrls.size;
+
+            selectedCount.textContent = count;
+
+            clearSelectionBtn.disabled = count === 0;
+            downloadSelectedBtn.disabled = count === 0;
+
+            const keyword = searchInput.value
+                .trim()
+                .toLowerCase();
+
+            const visibleImages = currentImages.filter(file =>
+                file.name.toLowerCase().includes(keyword)
+            );
+
+            selectAllBtn.disabled = visibleImages.length === 0;
+        }
+
+        function updateImageCount(count) {
+            const total = count ?? currentImages.length;
+
+            imageCount.textContent =
+                `${total} ${currentLanguage === "en" ? "images" : "張圖片"}`;
+        }
+
+        // =====================================
+        // 確定下載
+        // =====================================
+
+        downloadSelectedBtn.addEventListener("click", () => {
+            if (selectedUrls.size === 0) {
+                showToast(t("noSelection"));
+                return;
+            }
+
+            const urls = Array.from(selectedUrls);
+
+            // 原本的捷徑接收方式：
+            // 多個圖片網址以換行分隔
+            const urlText = urls.join("\n");
+
+            const shortcutLink =
+                `shortcuts://run-shortcut` +
+                `?name=${encodeURIComponent(SHORTCUT_NAME)}` +
+                `&input=text` +
+                `&text=${encodeURIComponent(urlText)}`;
+
+            showToast(t("downloading"));
+
+            window.location.href = shortcutLink;
+        });
+
+        // =====================================
+        // 安裝捷徑
+        // =====================================
 
         document.getElementById("shortcutBtn")
             .addEventListener("click", () => {
                 window.open(SHORTCUT_URL, "_blank");
             });
 
+        // =====================================
+        // 貼圖教學
+        // =====================================
+
+        const guideModal = document.getElementById("guideModal");
+
         document.getElementById("guideBtn")
             .addEventListener("click", () => {
-                showToast("guide.png");
+                guideModal.classList.remove("hidden");
             });
+
+        document.getElementById("closeGuideBtn")
+            .addEventListener("click", () => {
+                guideModal.classList.add("hidden");
+            });
+
+        guideModal.addEventListener("click", event => {
+            if (event.target === guideModal) {
+                guideModal.classList.add("hidden");
+            }
+        });
+
+        // =====================================
+        // 加入桌面
+        // =====================================
 
         document.getElementById("homeBtn")
             .addEventListener("click", () => {
                 showToast(
                     currentLanguage === "en"
                         ? "Use your browser menu to add this page to your home screen."
-                        : "請使用瀏覽器選單將網頁加入主畫面"
+                        : "請使用瀏覽器選單，將此網頁加入主畫面"
                 );
             });
+
+        // =====================================
+        // 提示訊息
+        // =====================================
+
+        let toastTimer;
 
         function showToast(message) {
             toast.textContent = message;
             toast.classList.add("show");
 
-            setTimeout(() => {
+            clearTimeout(toastTimer);
+
+            toastTimer = setTimeout(() => {
                 toast.classList.remove("show");
-            }, 2500);
+            }, 2200);
         }
 
-        // ==============================
+        // =====================================
         // 初始化
-        // ==============================
+        // =====================================
 
         applyLanguage();
         loadCategories();
