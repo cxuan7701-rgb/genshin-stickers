@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#171717">
+  <meta name="theme-color" content="#101a2b">
   <title>派蒙的畫作</title>
   <link rel="stylesheet" href="style.css">
 </head>
@@ -12,7 +12,6 @@
 <body>
   <div class="page">
 
-    <!-- 頂部 -->
     <header class="header">
       <div class="header-top">
         <div class="logo-area">
@@ -30,19 +29,15 @@
       </div>
 
       <nav class="top-buttons">
-        <a class="top-button" href="./" id="desktopAppButton">
-          <span>桌面 App</span>
-        </a>
+        <a class="top-button" href="./" id="desktopAppButton">桌面 App</a>
 
         <a
           class="top-button"
-          href="https://www.icloud.com/shortcuts/379f4f786fda49e58fb70cd6b5c405cf"
+          href="https://www.icloud.com/shortcuts/c7d92ded99d348339807fd89d406add5"
           target="_blank"
           rel="noopener"
           id="installShortcutButton"
-        >
-          <span>安裝捷徑</span>
-        </a>
+        >安裝捷徑</a>
 
         <button class="top-button" id="guideButton" type="button">
           <span id="guideButtonText">貼圖教學</span>
@@ -50,7 +45,6 @@
       </nav>
     </header>
 
-    <!-- 分類與搜尋 -->
     <main>
       <section class="toolbar">
         <div class="category-area">
@@ -95,7 +89,6 @@
       </div>
     </main>
 
-    <!-- 底部選取操作列 -->
     <footer class="selection-bar">
       <div class="selection-info">
         <span id="selectedLabel">已選取</span>
@@ -119,7 +112,6 @@
     </footer>
   </div>
 
-  <!-- 教學彈窗 -->
   <div id="guideModal" class="modal hidden">
     <div class="modal-backdrop" id="guideBackdrop"></div>
 
@@ -143,13 +135,10 @@
     const BRANCH_NAME = "main";
     const CATEGORY_FOLDER = "categories";
 
-    const GITHUB_API =
-      `https://api.github.com/repos/${GITHUB_USERNAME}/${REPO_NAME}/contents/${CATEGORY_FOLDER}?ref=${BRANCH_NAME}`;
-
     const SHORTCUT_NAME = "一鍵下載貼圖";
 
     /* =========================
-       語言文字
+       多語言文字
     ========================= */
 
     const translations = {
@@ -178,8 +167,8 @@
         loadError: "讀取失敗，請稍後再試。",
         noSelection: "請先選取想下載的貼圖。",
         confirmDownload: "確定要下載已選取的 {count} 張貼圖嗎？",
-        downloadError: "無法開啟捷徑，請確認已安裝「一鍵下載貼圖」捷徑。",
-        series: "派蒙的畫作 第{number}輯"
+        downloadError: "無法開啟捷徑，請確認已安裝捷徑。",
+        series: "派蒙的畫作 第一輯"
       },
 
       "zh-CN": {
@@ -207,8 +196,8 @@
         loadError: "读取失败，请稍后再试。",
         noSelection: "请先选择想下载的贴图。",
         confirmDownload: "确定要下载已选择的 {count} 张贴图吗？",
-        downloadError: "无法开启捷径，请确认已安装「一键下载贴图」捷径。",
-        series: "派蒙的画作 第{number}辑"
+        downloadError: "无法开启捷径，请确认已安装捷径。",
+        series: "派蒙的画作 第一辑"
       },
 
       en: {
@@ -236,8 +225,8 @@
         loadError: "Failed to load. Please try again later.",
         noSelection: "Please select some stickers first.",
         confirmDownload: "Download the {count} selected stickers?",
-        downloadError: "Unable to open the shortcut. Please make sure the shortcut is installed.",
-        series: "Paimon's Artwork Vol. {number}"
+        downloadError: "Unable to open the shortcut. Please check that it is installed.",
+        series: "Paimon's Artwork Vol. 1"
       },
 
       ja: {
@@ -266,7 +255,7 @@
         noSelection: "先にスタンプを選択してください。",
         confirmDownload: "選択した {count} 枚のスタンプをダウンロードしますか？",
         downloadError: "ショートカットを開けません。インストールされているか確認してください。",
-        series: "パイモンの作品 第{number}弾"
+        series: "パイモンの作品 第1弾"
       },
 
       ko: {
@@ -295,13 +284,9 @@
         noSelection: "먼저 스티커를 선택하세요.",
         confirmDownload: "선택한 스티커 {count}장을 다운로드할까요?",
         downloadError: "단축어를 열 수 없습니다. 단축어가 설치되어 있는지 확인하세요.",
-        series: "페이몬의 그림 제{number}집"
+        series: "페이몬의 그림 제1집"
       }
     };
-
-    /* =========================
-       網頁狀態
-    ========================= */
 
     let currentLanguage =
       localStorage.getItem("genshinLanguage") || "zh-TW";
@@ -310,13 +295,7 @@
     let currentFolder = null;
     let currentImages = [];
 
-    // 使用完整圖片網址作為唯一識別
-    // 因此切換系列後，先前選取的圖片仍會保留
     const selectedUrls = new Set();
-
-    /* =========================
-       DOM 元素
-    ========================= */
 
     const languageSelect = document.getElementById("languageSelect");
     const categorySelect = document.getElementById("categorySelect");
@@ -335,20 +314,25 @@
 
     const guideModal = document.getElementById("guideModal");
 
-    /* =========================
-       翻譯工具
-    ========================= */
-
     function t(key) {
       return translations[currentLanguage]?.[key]
         ?? translations["zh-TW"][key]
         ?? key;
     }
 
-    // 根據資料夾排序位置，自動產生系列名稱
-    // 不使用 GitHub 資料夾名稱作為畫面文字
+    // 自動產生系列名稱，不顯示 GitHub 資料夾原名
     function getSeriesName(index) {
-      return t("series").replace("{number}", index + 1);
+      const number = index + 1;
+
+      const names = {
+        "zh-TW": `派蒙的畫作 第${number}輯`,
+        "zh-CN": `派蒙的画作 第${number}辑`,
+        en: `Paimon's Artwork Vol. ${number}`,
+        ja: `パイモンの作品 第${number}弾`,
+        ko: `페이몬의 그림 제${number}집`
+      };
+
+      return names[currentLanguage] || names["zh-TW"];
     }
 
     function applyLanguage() {
@@ -379,13 +363,8 @@
 
       document.title = t("pageTitle");
 
-      // 重新產生系列選單文字
       renderCategoryOptions();
-
-      // 更新目前系列標題
       updateFolderTitle();
-
-      // 更新貼圖數量及選取數量
       renderImages();
       updateSelectedCount();
     }
@@ -404,7 +383,7 @@
 
     async function getGitHubContents(path) {
       const url =
-        `https://api.github.com/repos/${GITHUB_USERNAME}/${REPO_NAME}/contents/${path}?ref=${BRANCH_NAME}`;
+        `https://api.github.com/repos/cxuan7701-rgb/genshin-stickers/contents/${path}?ref=main`;
 
       const response = await fetch(url);
 
@@ -415,19 +394,17 @@
       return await response.json();
     }
 
-    // 使用原始 GitHub 路徑產生圖片網址
-    // 畫面翻譯不會影響這個路徑
     function getRawUrl(path) {
       const encodedPath = path
         .split("/")
         .map(part => encodeURIComponent(part))
         .join("/");
 
-      return `https://raw.githubusercontent.com/${GITHUB_USERNAME}/${REPO_NAME}/${BRANCH_NAME}/${encodedPath}`;
+      return `https://raw.githubusercontent.com/cxuan7701-rgb/genshin-stickers/main/${encodedPath}`;
     }
 
     /* =========================
-       載入系列資料夾
+       系列資料夾
     ========================= */
 
     async function loadCategories() {
@@ -436,9 +413,8 @@
       errorMessage.classList.add("hidden");
 
       try {
-        const contents = await getGitHubContents(CATEGORY_FOLDER);
+        const contents = await getGitHubContents("categories");
 
-        // 自動偵測所有資料夾，不寫死系列數量
         allFolders = contents
           .filter(item => item.type === "dir")
           .sort((a, b) =>
@@ -463,7 +439,6 @@
 
         renderCategoryOptions();
 
-        // 初次開啟自動顯示第一輯
         currentFolder = allFolders[0];
         categorySelect.value = currentFolder.path;
 
@@ -478,17 +453,13 @@
       }
     }
 
-    // 系列選單只顯示網頁自動產生的名稱
-    // 不顯示 GitHub 原始資料夾名稱
     function renderCategoryOptions() {
       categorySelect.innerHTML = "";
 
       allFolders.forEach((folder, index) => {
         const option = document.createElement("option");
-
         option.value = folder.path;
         option.textContent = getSeriesName(index);
-
         categorySelect.appendChild(option);
       });
 
@@ -511,14 +482,13 @@
     }
 
     /* =========================
-       載入系列中的圖片
+       圖片載入
     ========================= */
 
     async function loadImagesInFolder(folder) {
       if (!folder) return;
 
       currentFolder = folder;
-
       updateFolderTitle();
 
       loadingMessage.textContent = t("loading");
@@ -544,7 +514,6 @@
           );
 
         loadingMessage.classList.add("hidden");
-
         renderImages();
 
       } catch (error) {
@@ -556,7 +525,7 @@
     }
 
     /* =========================
-       顯示圖片
+       圖片顯示
     ========================= */
 
     function renderImages() {
@@ -595,11 +564,6 @@
           card.classList.add("selected");
         }
 
-        card.setAttribute(
-          "aria-label",
-          isSelected ? "Selected sticker" : "Sticker"
-        );
-
         const image = document.createElement("img");
         image.src = imageUrl;
         image.alt = "Genshin sticker";
@@ -609,7 +573,6 @@
         checkmark.className = "checkmark";
         checkmark.textContent = "✓";
 
-        // 不建立檔名文字，不在畫面顯示圖片檔案名稱
         card.appendChild(image);
         card.appendChild(checkmark);
 
@@ -622,7 +585,7 @@
     }
 
     /* =========================
-       選取與取消選取
+       選取功能
     ========================= */
 
     function toggleImageSelection(imageUrl, card) {
@@ -644,7 +607,6 @@
 
     /* =========================
        一鍵全選
-       只選取目前系列及目前搜尋結果
     ========================= */
 
     function selectAllCurrentImages() {
@@ -664,7 +626,6 @@
 
     /* =========================
        取消全選
-       清除所有系列的已選取圖片
     ========================= */
 
     function clearSelection() {
@@ -674,7 +635,7 @@
     }
 
     /* =========================
-       確定下載
+       下載功能
     ========================= */
 
     function downloadSelected() {
@@ -692,7 +653,6 @@
         return;
       }
 
-      // 多個網址以換行分隔，交給捷徑處理
       const text = encodeURIComponent(urls.join("\n"));
 
       const shortcutUrl =
@@ -702,7 +662,7 @@
     }
 
     /* =========================
-       事件監聽
+       事件
     ========================= */
 
     categorySelect.addEventListener("change", async () => {
@@ -716,9 +676,7 @@
       }
     });
 
-    searchInput.addEventListener("input", () => {
-      renderImages();
-    });
+    searchInput.addEventListener("input", renderImages);
 
     document
       .getElementById("selectAllButton")
@@ -732,12 +690,10 @@
 
     document
       .getElementById("refreshButton")
-      .addEventListener("click", async () => {
-        await loadCategories();
-      });
+      .addEventListener("click", loadCategories);
 
     /* =========================
-       教學彈窗
+       教學視窗
     ========================= */
 
     document.getElementById("guideButton").addEventListener("click", () => {

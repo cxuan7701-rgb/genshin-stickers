@@ -1,6 +1,6 @@
 
 /* =========================
-   基本設定
+   基本配色
 ========================= */
 
 * {
@@ -9,27 +9,41 @@
 
 :root {
   color-scheme: dark;
-  --background: #171717;
-  --surface: #222222;
-  --surface-hover: #2c2c2c;
-  --border: #383838;
-  --text: #f5f5f5;
-  --muted: #a5a5a5;
-  --accent: #e5b96f;
-  --accent-hover: #f0ca88;
+
+  --background: #101a2b;
+  --surface: #19263a;
+  --surface-hover: #243650;
+  --border: #34445c;
+
+  --text: #f3eee2;
+  --muted: #aab7c9;
+
+  --accent: #d9b66d;
+  --accent-hover: #ebcb88;
+
   --danger: #e07878;
 }
 
 html {
   min-height: 100%;
-  background: var(--background);
+  background: #101a2b;
 }
 
 body {
   margin: 0;
   min-height: 100vh;
-  background: var(--background);
+
+  background:
+    radial-gradient(
+      ellipse at 50% 0%,
+      #1d304b 0%,
+      #142239 45%,
+      #0c1525 100%
+    );
+
+  background-attachment: fixed;
   color: var(--text);
+
   font-family:
     -apple-system,
     BlinkMacSystemFont,
@@ -75,36 +89,63 @@ button {
 
 .header {
   margin-bottom: 32px;
+  text-align: center;
 }
 
 .header-top {
+  position: relative;
+
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
+
   gap: 20px;
+  min-height: 75px;
   margin-bottom: 22px;
+}
+
+.logo-area {
+  text-align: center;
 }
 
 .logo-area h1 {
   margin: 0;
-  font-size: 28px;
+
+  color: #e6c47b;
+  font-size: 32px;
   font-weight: 750;
-  letter-spacing: 0.5px;
+  letter-spacing: 2px;
+
+  text-shadow:
+    0 0 12px rgba(217, 182, 109, 0.18),
+    0 2px 5px rgba(0, 0, 0, 0.35);
 }
 
 .logo-area p {
-  margin: 7px 0 0;
-  color: var(--muted);
+  margin: 9px 0 0;
+  color: #b9c5d6;
   font-size: 14px;
+  letter-spacing: 2px;
 }
 
+/* =========================
+   語言選單
+========================= */
+
 .language-select {
+  position: absolute;
+  top: 0;
+  right: 0;
+
   min-width: 125px;
   padding: 10px 34px 10px 12px;
+
   border: 1px solid var(--border);
   border-radius: 10px;
+
   background: var(--surface);
   color: var(--text);
+
   cursor: pointer;
   outline: none;
 }
@@ -122,6 +163,7 @@ button {
 .top-buttons {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 10px;
 }
 
@@ -129,15 +171,20 @@ button {
   display: inline-flex;
   align-items: center;
   justify-content: center;
+
   min-height: 42px;
   padding: 0 17px;
+
   border: 1px solid var(--border);
   border-radius: 10px;
+
   background: var(--surface);
   color: var(--text);
+
   text-decoration: none;
   font-size: 14px;
   cursor: pointer;
+
   transition:
     background 0.2s,
     border-color 0.2s,
@@ -146,7 +193,7 @@ button {
 
 .top-button:hover {
   background: var(--surface-hover);
-  border-color: #666;
+  border-color: var(--accent);
   transform: translateY(-1px);
 }
 
@@ -179,10 +226,13 @@ button {
   width: 100%;
   height: 46px;
   padding: 0 14px;
+
   border: 1px solid var(--border);
   border-radius: 10px;
+
   background: var(--surface);
   color: var(--text);
+
   outline: none;
 }
 
@@ -204,6 +254,7 @@ button {
 
 .gallery-heading h2 {
   margin: 0;
+  color: #e6c47b;
   font-size: 21px;
   font-weight: 700;
 }
@@ -216,15 +267,19 @@ button {
 
 .refresh-button {
   padding: 9px 14px;
+
   border: 1px solid var(--border);
   border-radius: 9px;
+
   background: var(--surface);
   color: var(--text);
+
   cursor: pointer;
 }
 
 .refresh-button:hover {
   background: var(--surface-hover);
+  border-color: var(--accent);
 }
 
 /* =========================
@@ -239,17 +294,24 @@ button {
 
 .image-card {
   position: relative;
+
   display: flex;
   align-items: center;
   justify-content: center;
+
   width: 100%;
   aspect-ratio: 1 / 1;
   padding: 10px;
+
   overflow: hidden;
+
   border: 2px solid transparent;
   border-radius: 13px;
+
   background: var(--surface);
+
   cursor: pointer;
+
   transition:
     border-color 0.18s,
     background 0.18s,
@@ -270,8 +332,6 @@ button {
   pointer-events: none;
 }
 
-/* 不顯示圖片檔名 */
-
 .image-filename {
   display: none !important;
 }
@@ -282,25 +342,32 @@ button {
 
 .image-card.selected {
   border-color: var(--accent);
-  background: #302a20;
+  background: #302f2a;
 }
 
 .checkmark {
   position: absolute;
   top: 9px;
   right: 9px;
+
   display: flex;
   align-items: center;
   justify-content: center;
+
   width: 25px;
   height: 25px;
+
   border-radius: 50%;
+
   background: var(--accent);
   color: #222;
+
   font-size: 15px;
   font-weight: 800;
+
   opacity: 0;
   transform: scale(0.75);
+
   transition:
     opacity 0.18s,
     transform 0.18s;
@@ -312,7 +379,7 @@ button {
 }
 
 /* =========================
-   載入、錯誤、空白訊息
+   訊息
 ========================= */
 
 .message {
@@ -336,14 +403,19 @@ button {
   right: 0;
   bottom: 0;
   left: 0;
+
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 20px;
+
   min-height: 78px;
   padding: 12px max(24px, calc((100% - 1200px) / 2));
-  border-top: 1px solid var(--border);
-  background: rgba(25, 25, 25, 0.96);
+
+  border-top: 1px solid #34445c;
+
+  background: rgba(13, 24, 42, 0.96);
+
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
 }
@@ -352,6 +424,7 @@ button {
   display: flex;
   align-items: center;
   gap: 7px;
+
   color: var(--muted);
   font-size: 14px;
   white-space: nowrap;
@@ -371,11 +444,15 @@ button {
 .action-button {
   min-height: 41px;
   padding: 0 16px;
+
   border: 1px solid var(--border);
   border-radius: 9px;
+
   font-size: 13px;
   font-weight: 600;
+
   cursor: pointer;
+
   transition:
     background 0.2s,
     opacity 0.2s,
@@ -393,6 +470,7 @@ button {
 
 .action-button.secondary:hover {
   background: var(--surface-hover);
+  border-color: var(--accent);
 }
 
 .action-button.primary {
@@ -418,9 +496,11 @@ button {
   position: fixed;
   z-index: 100;
   inset: 0;
+
   display: flex;
   align-items: center;
   justify-content: center;
+
   padding: 20px;
 }
 
@@ -433,17 +513,22 @@ button {
 .modal-content {
   position: relative;
   z-index: 1;
+
   width: min(650px, 100%);
   max-height: 85vh;
+
   padding: 25px;
   overflow-y: auto;
+
   border: 1px solid var(--border);
   border-radius: 16px;
-  background: #222;
+
+  background: #19263a;
 }
 
 .modal-content h2 {
   margin: 0 35px 12px 0;
+  color: var(--accent);
   font-size: 21px;
 }
 
@@ -465,12 +550,16 @@ button {
   position: absolute;
   top: 12px;
   right: 15px;
+
   width: 35px;
   height: 35px;
+
   border: 0;
   border-radius: 50%;
+
   background: var(--surface-hover);
   color: var(--text);
+
   font-size: 25px;
   cursor: pointer;
 }
@@ -501,12 +590,19 @@ button {
   }
 
   .header-top {
-    align-items: flex-start;
+    align-items: center;
+    justify-content: center;
     gap: 10px;
+    min-height: 65px;
+  }
+
+  .logo-area {
+    text-align: center;
   }
 
   .logo-area h1 {
-    font-size: 23px;
+    font-size: 24px;
+    letter-spacing: 1.5px;
   }
 
   .logo-area p {
@@ -514,9 +610,13 @@ button {
   }
 
   .language-select {
+    top: 0;
+    right: 0;
+
     min-width: 105px;
     max-width: 125px;
     padding: 9px 7px;
+
     font-size: 12px;
   }
 
@@ -571,8 +671,13 @@ button {
     align-items: stretch;
     flex-direction: column;
     gap: 10px;
+
     min-height: auto;
-    padding: 12px 12px calc(12px + env(safe-area-inset-bottom));
+
+    padding:
+      12px
+      12px
+      calc(12px + env(safe-area-inset-bottom));
   }
 
   .selection-info {
