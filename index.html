@@ -2,706 +2,763 @@
 <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <meta name="theme-color" content="#111318">
-    <title>原神貼圖圖庫</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#171717">
+  <title>派蒙的畫作</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
+  <div class="page">
+
+    <!-- 頂部 -->
     <header class="header">
-        <div class="language-box">
-            <select id="languageSelect" class="language-select">
-                <option value="zh-TW">繁體中文</option>
-                <option value="zh-CN">简体中文</option>
-                <option value="en">English</option>
-                <option value="ja">日本語</option>
-                <option value="ko">한국어</option>
-            </select>
+      <div class="header-top">
+        <div class="logo-area">
+          <h1 id="pageTitle">派蒙的畫作</h1>
+          <p id="pageSubtitle">原神貼圖收藏</p>
         </div>
 
-        <h1 data-i18n="title">原神貼圖圖庫</h1>
-        <p class="subtitle" data-i18n="subtitle">收藏喜歡的角色貼圖</p>
+        <select id="languageSelect" class="language-select" aria-label="Language">
+          <option value="zh-TW">繁體中文</option>
+          <option value="zh-CN">简体中文</option>
+          <option value="en">English</option>
+          <option value="ja">日本語</option>
+          <option value="ko">한국어</option>
+        </select>
+      </div>
 
-        <div class="top-actions">
-            <button class="action-pill" id="homeBtn" data-i18n="home">
-                📲 桌面 App
-            </button>
-            <button class="action-pill" id="shortcutBtn" data-i18n="shortcut">
-                ⚡ 安裝捷徑
-            </button>
-            <button class="action-pill" id="guideBtn" data-i18n="guide">
-                📖 貼圖教學
-            </button>
-        </div>
+      <nav class="top-buttons">
+        <a class="top-button" href="./" id="desktopAppButton">
+          <span>桌面 App</span>
+        </a>
+
+        <a
+          class="top-button"
+          href="https://www.icloud.com/shortcuts/379f4f786fda49e58fb70cd6b5c405cf"
+          target="_blank"
+          rel="noopener"
+          id="installShortcutButton"
+        >
+          <span>安裝捷徑</span>
+        </a>
+
+        <button class="top-button" id="guideButton" type="button">
+          <span id="guideButtonText">貼圖教學</span>
+        </button>
+      </nav>
     </header>
 
-    <main class="main-container">
+    <!-- 分類與搜尋 -->
+    <main>
+      <section class="toolbar">
+        <div class="category-area">
+          <label for="categorySelect" id="categoryLabel">選擇系列</label>
+          <select id="categorySelect">
+            <option value="">載入中...</option>
+          </select>
+        </div>
 
-        <section class="toolbar">
-            <div class="category-control">
-                <label for="categorySelect" data-i18n="categoryLabel">
-                    選擇系列
-                </label>
-                <select id="categorySelect" class="category-select">
-                    <option value="" data-i18n="loading">載入中...</option>
-                </select>
-            </div>
+        <div class="search-area">
+          <label for="searchInput" id="searchLabel">搜尋貼圖</label>
+          <input
+            id="searchInput"
+            type="search"
+            placeholder="搜尋貼圖..."
+            autocomplete="off"
+          >
+        </div>
+      </section>
 
-            <div class="search-control">
-                <input
-                    type="search"
-                    id="searchInput"
-                    data-i18n-placeholder="searchPlaceholder"
-                    placeholder="搜尋貼圖名稱..."
-                >
-            </div>
-        </section>
+      <section class="gallery-heading">
+        <div>
+          <h2 id="currentFolderTitle">載入中...</h2>
+          <p id="imageCount">0 張貼圖</p>
+        </div>
 
-        <section class="gallery-section">
-            <div class="gallery-heading">
-                <div>
-                    <h2 id="folderTitle">第一輯</h2>
-                    <p id="imageCount" class="image-count">載入中...</p>
-                </div>
-            </div>
+        <button id="refreshButton" class="refresh-button" type="button">
+          <span id="refreshButtonText">重新整理</span>
+        </button>
+      </section>
 
-            <div id="imageGrid" class="image-grid">
-                <div class="loading" data-i18n="loading">載入中...</div>
-            </div>
-        </section>
+      <div id="loadingMessage" class="message">
+        正在載入貼圖...
+      </div>
 
+      <div id="errorMessage" class="message error-message hidden"></div>
+
+      <section id="imageGrid" class="image-grid"></section>
+
+      <div id="emptyMessage" class="message hidden">
+        找不到貼圖
+      </div>
     </main>
 
+    <!-- 底部選取操作列 -->
     <footer class="selection-bar">
-        <div class="selection-info">
-            <span data-i18n="selectedLabel">已選取</span>
-            <strong id="selectedCount">0</strong>
-            <span data-i18n="selectedUnit">張</span>
-        </div>
+      <div class="selection-info">
+        <span id="selectedLabel">已選取</span>
+        <strong id="selectedCount">0</strong>
+        <span id="selectedUnit">張</span>
+      </div>
 
-        <div class="selection-actions">
-            <button id="selectAllBtn" class="select-all-button" disabled data-i18n="selectAll">
-                ☑ 一鍵全選
-            </button>
+      <div class="selection-actions">
+        <button id="selectAllButton" class="action-button secondary" type="button">
+          一鍵全選
+        </button>
 
-            <button id="clearSelectionBtn" class="clear-button" disabled data-i18n="clear">
-                取消全選
-            </button>
+        <button id="clearSelectionButton" class="action-button secondary" type="button">
+          取消全選
+        </button>
 
-            <button id="downloadSelectedBtn" class="download-button" disabled data-i18n="download">
-                ⚡ 確定下載
-            </button>
-        </div>
+        <button id="downloadButton" class="action-button primary" type="button" disabled>
+          確定下載
+        </button>
+      </div>
     </footer>
+  </div>
 
-    <div id="toast" class="toast"></div>
+  <!-- 教學彈窗 -->
+  <div id="guideModal" class="modal hidden">
+    <div class="modal-backdrop" id="guideBackdrop"></div>
 
-    <div id="guideModal" class="guide-modal hidden">
-        <div class="guide-content">
-            <button id="closeGuideBtn" class="modal-close">✕</button>
-            <h2 data-i18n="guideTitle">使用教學</h2>
-            <img src="guide.png" alt="貼圖使用教學">
-        </div>
+    <div class="modal-content">
+      <button class="modal-close" id="closeGuideButton" type="button">×</button>
+      <h2 id="guideTitle">貼圖下載教學</h2>
+      <p id="guideDescription">
+        選取想下載的貼圖，再按下確定下載即可。
+      </p>
+      <img src="guide.png" alt="貼圖下載教學" id="guideImage">
     </div>
+  </div>
 
-    <script>
-        // =====================================
-        // GitHub 設定
-        // =====================================
+  <script>
+    /* =========================
+       GitHub 設定
+    ========================= */
 
-        const GITHUB_USERNAME = "cxuan7701-rgb";
-        const REPO_NAME = "genshin-stickers";
-        const BRANCH_NAME = "main";
+    const GITHUB_USERNAME = "cxuan7701-rgb";
+    const REPO_NAME = "genshin-stickers";
+    const BRANCH_NAME = "main";
+    const CATEGORY_FOLDER = "categories";
 
-        const SHORTCUT_NAME = "一鍵下載貼圖";
+    const GITHUB_API =
+      `https://api.github.com/repos/${GITHUB_USERNAME}/${REPO_NAME}/contents/${CATEGORY_FOLDER}?ref=${BRANCH_NAME}`;
 
-        const SHORTCUT_URL =
-            "https://www.icloud.com/shortcuts/379f4f786fda49e58fb70cd6b5c405cf";
+    const SHORTCUT_NAME = "一鍵下載貼圖";
 
-        const API_BASE =
-            `https://api.github.com/repos/${GITHUB_USERNAME}/${REPO_NAME}/contents`;
+    /* =========================
+       語言文字
+    ========================= */
 
-        // =====================================
-        // 多語言設定
-        // =====================================
+    const translations = {
+      "zh-TW": {
+        pageTitle: "派蒙的畫作",
+        pageSubtitle: "原神貼圖收藏",
+        desktopApp: "桌面 App",
+        installShortcut: "安裝捷徑",
+        guideButton: "貼圖教學",
+        categoryLabel: "選擇系列",
+        searchLabel: "搜尋貼圖",
+        searchPlaceholder: "搜尋貼圖...",
+        loading: "正在載入貼圖...",
+        loadingCategories: "正在讀取系列...",
+        noImages: "這個系列目前沒有貼圖",
+        noSearchResults: "找不到符合條件的貼圖",
+        imageCount: "張貼圖",
+        selectedLabel: "已選取",
+        selectedUnit: "張",
+        selectAll: "一鍵全選",
+        clearSelection: "取消全選",
+        download: "確定下載",
+        refresh: "重新整理",
+        guideTitle: "貼圖下載教學",
+        guideDescription: "選取想下載的貼圖，再按下確定下載即可。",
+        loadError: "讀取失敗，請稍後再試。",
+        noSelection: "請先選取想下載的貼圖。",
+        confirmDownload: "確定要下載已選取的 {count} 張貼圖嗎？",
+        downloadError: "無法開啟捷徑，請確認已安裝「一鍵下載貼圖」捷徑。",
+        series: "派蒙的畫作 第{number}輯"
+      },
 
-        const translations = {
-            "zh-TW": {
-                title: "原神貼圖圖庫",
-                subtitle: "收藏喜歡的角色貼圖",
-                home: "📲 桌面 App",
-                shortcut: "⚡ 安裝捷徑",
-                guide: "📖 貼圖教學",
-                categoryLabel: "選擇系列",
-                loading: "載入中...",
-                searchPlaceholder: "搜尋貼圖名稱...",
-                selectedLabel: "已選取",
-                selectedUnit: "張",
-                selectAll: "☑ 一鍵全選",
-                clear: "取消全選",
-                download: "⚡ 確定下載",
-                empty: "目前沒有圖片",
-                error: "載入失敗，請稍後再試",
-                guideTitle: "使用教學",
-                noSelection: "請先選擇貼圖",
-                allSelected: "目前系列已全選",
-                selectedToast: "已選取所有貼圖",
-                cleared: "已取消所有選取",
-                downloading: "正在開啟捷徑...",
-                searchEmpty: "找不到符合的貼圖",
-                loadFailed: "無法載入 GitHub 資料"
-            },
-            "zh-CN": {
-                title: "原神表情包图库",
-                subtitle: "收藏喜欢的角色表情包",
-                home: "📲 桌面应用",
-                shortcut: "⚡ 安装捷径",
-                guide: "📖 表情包教程",
-                categoryLabel: "选择系列",
-                loading: "加载中...",
-                searchPlaceholder: "搜索表情包名称...",
-                selectedLabel: "已选择",
-                selectedUnit: "张",
-                selectAll: "☑ 一键全选",
-                clear: "取消全选",
-                download: "⚡ 确认下载",
-                empty: "目前没有图片",
-                error: "加载失败，请稍后再试",
-                guideTitle: "使用教程",
-                noSelection: "请先选择表情包",
-                allSelected: "当前系列已全选",
-                selectedToast: "已选择所有表情包",
-                cleared: "已取消所有选择",
-                downloading: "正在打开快捷指令...",
-                searchEmpty: "找不到符合的表情包",
-                loadFailed: "无法加载 GitHub 数据"
-            },
-            "en": {
-                title: "Genshin Stickers",
-                subtitle: "Collect your favorite character stickers",
-                home: "📲 Home App",
-                shortcut: "⚡ Shortcut",
-                guide: "📖 Guide",
-                categoryLabel: "Collection",
-                loading: "Loading...",
-                searchPlaceholder: "Search stickers...",
-                selectedLabel: "Selected",
-                selectedUnit: "",
-                selectAll: "☑ Select All",
-                clear: "Clear Selection",
-                download: "⚡ Confirm Download",
-                empty: "No images found",
-                error: "Loading failed. Please try again.",
-                guideTitle: "User Guide",
-                noSelection: "Please select stickers first",
-                allSelected: "This collection is fully selected",
-                selectedToast: "All stickers selected",
-                cleared: "Selection cleared",
-                downloading: "Opening Shortcut...",
-                searchEmpty: "No matching stickers",
-                loadFailed: "Unable to load GitHub data"
-            },
-            "ja": {
-                title: "原神スタンプギャラリー",
-                subtitle: "お気に入りのキャラクターを集めよう",
-                home: "📲 ホーム追加",
-                shortcut: "⚡ ショートカット",
-                guide: "📖 使い方",
-                categoryLabel: "シリーズ選択",
-                loading: "読み込み中...",
-                searchPlaceholder: "スタンプを検索...",
-                selectedLabel: "選択中",
-                selectedUnit: "枚",
-                selectAll: "☑ すべて選択",
-                clear: "選択解除",
-                download: "⚡ ダウンロード確定",
-                empty: "画像がありません",
-                error: "読み込みに失敗しました",
-                guideTitle: "使い方",
-                noSelection: "スタンプを選択してください",
-                allSelected: "このシリーズはすべて選択済みです",
-                selectedToast: "すべて選択しました",
-                cleared: "選択を解除しました",
-                downloading: "ショートカットを起動中...",
-                searchEmpty: "該当するスタンプがありません",
-                loadFailed: "GitHubデータを読み込めません"
-            },
-            "ko": {
-                title: "원신 스티커 갤러리",
-                subtitle: "좋아하는 캐릭터 스티커 모음",
-                home: "📲 홈 화면 추가",
-                shortcut: "⚡ 단축어",
-                guide: "📖 사용법",
-                categoryLabel: "시리즈 선택",
-                loading: "불러오는 중...",
-                searchPlaceholder: "스티커 검색...",
-                selectedLabel: "선택됨",
-                selectedUnit: "개",
-                selectAll: "☑ 전체 선택",
-                clear: "선택 취소",
-                download: "⚡ 다운로드 확인",
-                empty: "이미지가 없습니다",
-                error: "불러오기에 실패했습니다",
-                guideTitle: "사용 방법",
-                noSelection: "스티커를 먼저 선택하세요",
-                allSelected: "현재 시리즈가 모두 선택되었습니다",
-                selectedToast: "모든 스티커를 선택했습니다",
-                cleared: "선택을 취소했습니다",
-                downloading: "단축어를 실행하는 중...",
-                searchEmpty: "일치하는 스티커가 없습니다",
-                loadFailed: "GitHub 데이터를 불러올 수 없습니다"
-            }
-        };
+      "zh-CN": {
+        pageTitle: "派蒙的画作",
+        pageSubtitle: "原神贴图收藏",
+        desktopApp: "桌面 App",
+        installShortcut: "安装捷径",
+        guideButton: "贴图教学",
+        categoryLabel: "选择系列",
+        searchLabel: "搜索贴图",
+        searchPlaceholder: "搜索贴图...",
+        loading: "正在加载贴图...",
+        loadingCategories: "正在读取系列...",
+        noImages: "这个系列目前没有贴图",
+        noSearchResults: "找不到符合条件的贴图",
+        imageCount: "张贴图",
+        selectedLabel: "已选择",
+        selectedUnit: "张",
+        selectAll: "一键全选",
+        clearSelection: "取消全选",
+        download: "确定下载",
+        refresh: "重新整理",
+        guideTitle: "贴图下载教学",
+        guideDescription: "选择想下载的贴图，再按下确定下载即可。",
+        loadError: "读取失败，请稍后再试。",
+        noSelection: "请先选择想下载的贴图。",
+        confirmDownload: "确定要下载已选择的 {count} 张贴图吗？",
+        downloadError: "无法开启捷径，请确认已安装「一键下载贴图」捷径。",
+        series: "派蒙的画作 第{number}辑"
+      },
 
-        // =====================================
-        // 狀態
-        // =====================================
+      en: {
+        pageTitle: "Paimon's Artwork",
+        pageSubtitle: "Genshin Sticker Collection",
+        desktopApp: "Desktop App",
+        installShortcut: "Install Shortcut",
+        guideButton: "Guide",
+        categoryLabel: "Select Series",
+        searchLabel: "Search Stickers",
+        searchPlaceholder: "Search stickers...",
+        loading: "Loading stickers...",
+        loadingCategories: "Loading series...",
+        noImages: "There are no stickers in this series.",
+        noSearchResults: "No matching stickers found.",
+        imageCount: "stickers",
+        selectedLabel: "Selected",
+        selectedUnit: "",
+        selectAll: "Select All",
+        clearSelection: "Clear Selection",
+        download: "Confirm Download",
+        refresh: "Refresh",
+        guideTitle: "Download Guide",
+        guideDescription: "Select the stickers you want, then press Confirm Download.",
+        loadError: "Failed to load. Please try again later.",
+        noSelection: "Please select some stickers first.",
+        confirmDownload: "Download the {count} selected stickers?",
+        downloadError: "Unable to open the shortcut. Please make sure the shortcut is installed.",
+        series: "Paimon's Artwork Vol. {number}"
+      },
 
-        let currentLanguage =
-            localStorage.getItem("genshinLanguage") || "zh-TW";
+      ja: {
+        pageTitle: "パイモンの作品",
+        pageSubtitle: "原神スタンプコレクション",
+        desktopApp: "デスクトップ App",
+        installShortcut: "ショートカットをインストール",
+        guideButton: "使い方",
+        categoryLabel: "シリーズを選択",
+        searchLabel: "スタンプを検索",
+        searchPlaceholder: "スタンプを検索...",
+        loading: "スタンプを読み込み中...",
+        loadingCategories: "シリーズを読み込み中...",
+        noImages: "このシリーズにはスタンプがありません。",
+        noSearchResults: "該当するスタンプがありません。",
+        imageCount: "枚",
+        selectedLabel: "選択中",
+        selectedUnit: "枚",
+        selectAll: "すべて選択",
+        clearSelection: "選択を解除",
+        download: "ダウンロードを確定",
+        refresh: "更新",
+        guideTitle: "ダウンロード方法",
+        guideDescription: "ダウンロードしたいスタンプを選択して、確定ボタンを押してください。",
+        loadError: "読み込みに失敗しました。もう一度お試しください。",
+        noSelection: "先にスタンプを選択してください。",
+        confirmDownload: "選択した {count} 枚のスタンプをダウンロードしますか？",
+        downloadError: "ショートカットを開けません。インストールされているか確認してください。",
+        series: "パイモンの作品 第{number}弾"
+      },
 
-        let allFolders = [];
-        let currentFolder = null;
-        let currentImages = [];
+      ko: {
+        pageTitle: "페이몬의 그림",
+        pageSubtitle: "원신 스티커 컬렉션",
+        desktopApp: "데스크톱 App",
+        installShortcut: "단축어 설치",
+        guideButton: "사용 방법",
+        categoryLabel: "시리즈 선택",
+        searchLabel: "스티커 검색",
+        searchPlaceholder: "스티커 검색...",
+        loading: "스티커를 불러오는 중...",
+        loadingCategories: "시리즈를 불러오는 중...",
+        noImages: "이 시리즈에는 스티커가 없습니다.",
+        noSearchResults: "검색 결과가 없습니다.",
+        imageCount: "장",
+        selectedLabel: "선택됨",
+        selectedUnit: "장",
+        selectAll: "모두 선택",
+        clearSelection: "선택 취소",
+        download: "다운로드 확인",
+        refresh: "새로고침",
+        guideTitle: "다운로드 방법",
+        guideDescription: "원하는 스티커를 선택한 다음 다운로드 확인을 누르세요.",
+        loadError: "불러오기에 실패했습니다. 잠시 후 다시 시도하세요.",
+        noSelection: "먼저 스티커를 선택하세요.",
+        confirmDownload: "선택한 스티커 {count}장을 다운로드할까요?",
+        downloadError: "단축어를 열 수 없습니다. 단축어가 설치되어 있는지 확인하세요.",
+        series: "페이몬의 그림 제{number}집"
+      }
+    };
 
-        // 用 Set 保存選取的圖片網址
-        // 切換分類時不會清除已選取的圖片
-        const selectedUrls = new Set();
+    /* =========================
+       網頁狀態
+    ========================= */
 
-        // =====================================
-        // DOM
-        // =====================================
+    let currentLanguage =
+      localStorage.getItem("genshinLanguage") || "zh-TW";
 
-        const languageSelect = document.getElementById("languageSelect");
-        const categorySelect = document.getElementById("categorySelect");
-        const searchInput = document.getElementById("searchInput");
-        const imageGrid = document.getElementById("imageGrid");
-        const folderTitle = document.getElementById("folderTitle");
-        const imageCount = document.getElementById("imageCount");
+    let allFolders = [];
+    let currentFolder = null;
+    let currentImages = [];
 
-        const selectedCount = document.getElementById("selectedCount");
-        const selectAllBtn = document.getElementById("selectAllBtn");
-        const clearSelectionBtn = document.getElementById("clearSelectionBtn");
-        const downloadSelectedBtn = document.getElementById("downloadSelectedBtn");
+    // 使用完整圖片網址作為唯一識別
+    // 因此切換系列後，先前選取的圖片仍會保留
+    const selectedUrls = new Set();
 
-        const toast = document.getElementById("toast");
+    /* =========================
+       DOM 元素
+    ========================= */
 
-        // =====================================
-        // 語言切換
-        // =====================================
+    const languageSelect = document.getElementById("languageSelect");
+    const categorySelect = document.getElementById("categorySelect");
+    const searchInput = document.getElementById("searchInput");
+    const imageGrid = document.getElementById("imageGrid");
 
-        function t(key) {
-            return translations[currentLanguage][key] ||
-                translations["zh-TW"][key] ||
-                key;
+    const loadingMessage = document.getElementById("loadingMessage");
+    const errorMessage = document.getElementById("errorMessage");
+    const emptyMessage = document.getElementById("emptyMessage");
+
+    const currentFolderTitle = document.getElementById("currentFolderTitle");
+    const imageCount = document.getElementById("imageCount");
+
+    const selectedCount = document.getElementById("selectedCount");
+    const downloadButton = document.getElementById("downloadButton");
+
+    const guideModal = document.getElementById("guideModal");
+
+    /* =========================
+       翻譯工具
+    ========================= */
+
+    function t(key) {
+      return translations[currentLanguage]?.[key]
+        ?? translations["zh-TW"][key]
+        ?? key;
+    }
+
+    // 根據資料夾排序位置，自動產生系列名稱
+    // 不使用 GitHub 資料夾名稱作為畫面文字
+    function getSeriesName(index) {
+      return t("series").replace("{number}", index + 1);
+    }
+
+    function applyLanguage() {
+      document.documentElement.lang = currentLanguage;
+
+      document.getElementById("pageTitle").textContent = t("pageTitle");
+      document.getElementById("pageSubtitle").textContent = t("pageSubtitle");
+
+      document.getElementById("desktopAppButton").textContent = t("desktopApp");
+      document.getElementById("installShortcutButton").textContent = t("installShortcut");
+      document.getElementById("guideButtonText").textContent = t("guideButton");
+
+      document.getElementById("categoryLabel").textContent = t("categoryLabel");
+      document.getElementById("searchLabel").textContent = t("searchLabel");
+      searchInput.placeholder = t("searchPlaceholder");
+
+      document.getElementById("selectedLabel").textContent = t("selectedLabel");
+      document.getElementById("selectedUnit").textContent = t("selectedUnit");
+
+      document.getElementById("selectAllButton").textContent = t("selectAll");
+      document.getElementById("clearSelectionButton").textContent = t("clearSelection");
+      downloadButton.textContent = t("download");
+
+      document.getElementById("refreshButtonText").textContent = t("refresh");
+
+      document.getElementById("guideTitle").textContent = t("guideTitle");
+      document.getElementById("guideDescription").textContent = t("guideDescription");
+
+      document.title = t("pageTitle");
+
+      // 重新產生系列選單文字
+      renderCategoryOptions();
+
+      // 更新目前系列標題
+      updateFolderTitle();
+
+      // 更新貼圖數量及選取數量
+      renderImages();
+      updateSelectedCount();
+    }
+
+    languageSelect.value = currentLanguage;
+
+    languageSelect.addEventListener("change", () => {
+      currentLanguage = languageSelect.value;
+      localStorage.setItem("genshinLanguage", currentLanguage);
+      applyLanguage();
+    });
+
+    /* =========================
+       GitHub API
+    ========================= */
+
+    async function getGitHubContents(path) {
+      const url =
+        `https://api.github.com/repos/${GITHUB_USERNAME}/${REPO_NAME}/contents/${path}?ref=${BRANCH_NAME}`;
+
+      const response = await fetch(url);
+
+      if (!response.ok) {
+        throw new Error(`GitHub API Error: ${response.status}`);
+      }
+
+      return await response.json();
+    }
+
+    // 使用原始 GitHub 路徑產生圖片網址
+    // 畫面翻譯不會影響這個路徑
+    function getRawUrl(path) {
+      const encodedPath = path
+        .split("/")
+        .map(part => encodeURIComponent(part))
+        .join("/");
+
+      return `https://raw.githubusercontent.com/${GITHUB_USERNAME}/${REPO_NAME}/${BRANCH_NAME}/${encodedPath}`;
+    }
+
+    /* =========================
+       載入系列資料夾
+    ========================= */
+
+    async function loadCategories() {
+      loadingMessage.textContent = t("loadingCategories");
+      loadingMessage.classList.remove("hidden");
+      errorMessage.classList.add("hidden");
+
+      try {
+        const contents = await getGitHubContents(CATEGORY_FOLDER);
+
+        // 自動偵測所有資料夾，不寫死系列數量
+        allFolders = contents
+          .filter(item => item.type === "dir")
+          .sort((a, b) =>
+            a.name.localeCompare(b.name, undefined, {
+              numeric: true,
+              sensitivity: "base"
+            })
+          );
+
+        if (allFolders.length === 0) {
+          categorySelect.innerHTML = "";
+          currentFolder = null;
+          currentImages = [];
+          imageGrid.innerHTML = "";
+          loadingMessage.classList.add("hidden");
+          emptyMessage.textContent = t("noImages");
+          emptyMessage.classList.remove("hidden");
+          currentFolderTitle.textContent = "";
+          imageCount.textContent = `0 ${t("imageCount")}`;
+          return;
         }
 
-        function applyLanguage() {
-            document.documentElement.lang = currentLanguage;
+        renderCategoryOptions();
 
-            document.querySelectorAll("[data-i18n]").forEach(element => {
-                const key = element.dataset.i18n;
-                element.textContent = t(key);
-            });
+        // 初次開啟自動顯示第一輯
+        currentFolder = allFolders[0];
+        categorySelect.value = currentFolder.path;
 
-            document.querySelectorAll("[data-i18n-placeholder]").forEach(element => {
-                const key = element.dataset.i18nPlaceholder;
-                element.placeholder = t(key);
-            });
+        updateFolderTitle();
+        await loadImagesInFolder(currentFolder);
 
-            languageSelect.value = currentLanguage;
+      } catch (error) {
+        console.error(error);
+        loadingMessage.classList.add("hidden");
+        errorMessage.textContent = t("loadError");
+        errorMessage.classList.remove("hidden");
+      }
+    }
 
-            updateSelectionUI();
-            updateImageCount();
+    // 系列選單只顯示網頁自動產生的名稱
+    // 不顯示 GitHub 原始資料夾名稱
+    function renderCategoryOptions() {
+      categorySelect.innerHTML = "";
+
+      allFolders.forEach((folder, index) => {
+        const option = document.createElement("option");
+
+        option.value = folder.path;
+        option.textContent = getSeriesName(index);
+
+        categorySelect.appendChild(option);
+      });
+
+      if (currentFolder) {
+        categorySelect.value = currentFolder.path;
+      }
+    }
+
+    function updateFolderTitle() {
+      if (!currentFolder) {
+        currentFolderTitle.textContent = "";
+        return;
+      }
+
+      const index = allFolders.findIndex(
+        folder => folder.path === currentFolder.path
+      );
+
+      currentFolderTitle.textContent = getSeriesName(index);
+    }
+
+    /* =========================
+       載入系列中的圖片
+    ========================= */
+
+    async function loadImagesInFolder(folder) {
+      if (!folder) return;
+
+      currentFolder = folder;
+
+      updateFolderTitle();
+
+      loadingMessage.textContent = t("loading");
+      loadingMessage.classList.remove("hidden");
+      errorMessage.classList.add("hidden");
+      emptyMessage.classList.add("hidden");
+
+      imageGrid.innerHTML = "";
+
+      try {
+        const contents = await getGitHubContents(folder.path);
+
+        currentImages = contents
+          .filter(item =>
+            item.type === "file" &&
+            /\.(png|jpe?g|gif|webp|avif)$/i.test(item.name)
+          )
+          .sort((a, b) =>
+            a.name.localeCompare(b.name, undefined, {
+              numeric: true,
+              sensitivity: "base"
+            })
+          );
+
+        loadingMessage.classList.add("hidden");
+
+        renderImages();
+
+      } catch (error) {
+        console.error(error);
+        loadingMessage.classList.add("hidden");
+        errorMessage.textContent = t("loadError");
+        errorMessage.classList.remove("hidden");
+      }
+    }
+
+    /* =========================
+       顯示圖片
+    ========================= */
+
+    function renderImages() {
+      imageGrid.innerHTML = "";
+
+      const keyword = searchInput.value.trim().toLowerCase();
+
+      const filteredImages = currentImages.filter(file =>
+        file.name.toLowerCase().includes(keyword)
+      );
+
+      imageCount.textContent =
+        `${filteredImages.length} ${t("imageCount")}`;
+
+      if (filteredImages.length === 0) {
+        emptyMessage.textContent =
+          currentImages.length === 0
+            ? t("noImages")
+            : t("noSearchResults");
+
+        emptyMessage.classList.remove("hidden");
+        return;
+      }
+
+      emptyMessage.classList.add("hidden");
+
+      filteredImages.forEach(file => {
+        const imageUrl = getRawUrl(file.path);
+        const isSelected = selectedUrls.has(imageUrl);
+
+        const card = document.createElement("button");
+        card.type = "button";
+        card.className = "image-card";
+
+        if (isSelected) {
+          card.classList.add("selected");
         }
 
-        languageSelect.addEventListener("change", event => {
-            currentLanguage = event.target.value;
+        card.setAttribute(
+          "aria-label",
+          isSelected ? "Selected sticker" : "Sticker"
+        );
 
-            localStorage.setItem("genshinLanguage", currentLanguage);
+        const image = document.createElement("img");
+        image.src = imageUrl;
+        image.alt = "Genshin sticker";
+        image.loading = "lazy";
 
-            applyLanguage();
-            renderImages();
+        const checkmark = document.createElement("span");
+        checkmark.className = "checkmark";
+        checkmark.textContent = "✓";
+
+        // 不建立檔名文字，不在畫面顯示圖片檔案名稱
+        card.appendChild(image);
+        card.appendChild(checkmark);
+
+        card.addEventListener("click", () => {
+          toggleImageSelection(imageUrl, card);
         });
 
-        // =====================================
-        // GitHub API
-        // =====================================
-
-        async function getGitHubContents(path) {
-            const encodedPath = path
-                .split("/")
-                .map(part => encodeURIComponent(part))
-                .join("/");
-
-            const response = await fetch(
-                `${API_BASE}/${encodedPath}?ref=${BRANCH_NAME}`
-            );
-
-            if (!response.ok) {
-                throw new Error(`GitHub API Error: ${response.status}`);
-            }
-
-            return await response.json();
-        }
-
-        function getRawUrl(path) {
-            const encodedPath = path
-                .split("/")
-                .map(part => encodeURIComponent(part))
-                .join("/");
-
-            return `https://raw.githubusercontent.com/${GITHUB_USERNAME}/${REPO_NAME}/${BRANCH_NAME}/${encodedPath}`;
-        }
-
-        // =====================================
-        // 載入所有分類
-        // =====================================
-
-        async function loadCategories() {
-            categorySelect.innerHTML =
-                `<option value="">${t("loading")}</option>`;
-
-            try {
-                const contents = await getGitHubContents("categories");
-
-                allFolders = contents.filter(item =>
-                    item.type === "dir"
-                );
-
-                if (allFolders.length === 0) {
-                    categorySelect.innerHTML =
-                        `<option value="">${t("empty")}</option>`;
-                    return;
-                }
-
-                categorySelect.innerHTML = "";
-
-                allFolders.forEach((folder, index) => {
-                    const option = document.createElement("option");
-
-                    option.value = folder.path;
-                    option.textContent = folder.name;
-
-                    categorySelect.appendChild(option);
-                });
-
-                // 開啟網頁時直接顯示第一輯
-                currentFolder = allFolders[0];
-                categorySelect.value = currentFolder.path;
-
-                await loadImagesInFolder(currentFolder);
-
-            } catch (error) {
-                categorySelect.innerHTML =
-                    `<option value="">${t("error")}</option>`;
-
-                imageGrid.innerHTML =
-                    `<div class="empty-message">${t("loadFailed")}</div>`;
-
-                console.error(error);
-            }
-        }
-
-        // =====================================
-        // 切換分類
-        // =====================================
-
-        categorySelect.addEventListener("change", async event => {
-            const folder = allFolders.find(item =>
-                item.path === event.target.value
-            );
-
-            if (!folder) return;
-
-            currentFolder = folder;
-            searchInput.value = "";
-
-            await loadImagesInFolder(folder);
-        });
-
-        // =====================================
-        // 載入分類圖片
-        // =====================================
-
-        async function loadImagesInFolder(folder) {
-            currentFolder = folder;
-
-            folderTitle.textContent = folder.name;
-
-            imageGrid.innerHTML =
-                `<div class="loading">${t("loading")}</div>`;
-
-            try {
-                const contents = await getGitHubContents(folder.path);
-
-                currentImages = contents.filter(file =>
-                    file.type === "file" &&
-                    /\.(png|jpe?g|gif|webp)$/i.test(file.name)
-                );
-
-                renderImages();
-
-            } catch (error) {
-                imageGrid.innerHTML =
-                    `<div class="empty-message">${t("error")}</div>`;
-
-                console.error(error);
-            }
-        }
-
-        // =====================================
-        // 顯示圖片
-        // =====================================
-
-        function renderImages() {
-            imageGrid.innerHTML = "";
-
-            const keyword = searchInput.value
-                .trim()
-                .toLowerCase();
-
-            const filteredImages = currentImages.filter(file =>
-                file.name.toLowerCase().includes(keyword)
-            );
-
-            if (filteredImages.length === 0) {
-                imageGrid.innerHTML =
-                    `<div class="empty-message">${t("searchEmpty")}</div>`;
-
-                updateImageCount(0);
-                updateSelectionUI();
-                return;
-            }
-
-            filteredImages.forEach(file => {
-                const imageUrl = getRawUrl(file.path);
-                const isSelected = selectedUrls.has(imageUrl);
-
-                const card = document.createElement("button");
-                card.type = "button";
-                card.className = "image-card";
-
-                if (isSelected) {
-                    card.classList.add("selected");
-                }
-
-                card.setAttribute("aria-pressed", String(isSelected));
-                card.title = file.name;
-
-                const image = document.createElement("img");
-                image.src = imageUrl;
-                image.alt = file.name;
-                image.loading = "lazy";
-
-                image.onerror = () => {
-                    image.alt = "Image failed to load";
-                    card.classList.add("image-error");
-                };
-
-                const checkmark = document.createElement("span");
-                checkmark.className = "selection-check";
-                checkmark.textContent = "✓";
-
-                const filename = document.createElement("span");
-                filename.className = "image-filename";
-                filename.textContent = file.name;
-
-                card.appendChild(image);
-                card.appendChild(checkmark);
-                card.appendChild(filename);
-
-                card.addEventListener("click", () => {
-                    toggleImageSelection(imageUrl);
-                });
-
-                imageGrid.appendChild(card);
-            });
-
-            updateImageCount(filteredImages.length);
-            updateSelectionUI();
-        }
-
-        // =====================================
-        // 搜尋圖片
-        // =====================================
-
-        searchInput.addEventListener("input", () => {
-            renderImages();
-        });
-
-        // =====================================
-        // 選取 / 取消單張圖片
-        // =====================================
-
-        function toggleImageSelection(url) {
-            if (selectedUrls.has(url)) {
-                selectedUrls.delete(url);
-            } else {
-                selectedUrls.add(url);
-            }
-
-            renderImages();
-        }
-
-        // =====================================
-        // 一鍵全選
-        // =====================================
-
-        selectAllBtn.addEventListener("click", () => {
-            const keyword = searchInput.value
-                .trim()
-                .toLowerCase();
-
-            const visibleImages = currentImages.filter(file =>
-                file.name.toLowerCase().includes(keyword)
-            );
-
-            visibleImages.forEach(file => {
-                selectedUrls.add(getRawUrl(file.path));
-            });
-
-            renderImages();
-            showToast(t("selectedToast"));
-        });
-
-        // =====================================
-        // 取消全選
-        // =====================================
-
-        clearSelectionBtn.addEventListener("click", () => {
-            selectedUrls.clear();
-
-            renderImages();
-            showToast(t("cleared"));
-        });
-
-        // =====================================
-        // 更新選取狀態
-        // =====================================
-
-        function updateSelectionUI() {
-            const count = selectedUrls.size;
-
-            selectedCount.textContent = count;
-
-            clearSelectionBtn.disabled = count === 0;
-            downloadSelectedBtn.disabled = count === 0;
-
-            const keyword = searchInput.value
-                .trim()
-                .toLowerCase();
-
-            const visibleImages = currentImages.filter(file =>
-                file.name.toLowerCase().includes(keyword)
-            );
-
-            selectAllBtn.disabled = visibleImages.length === 0;
-        }
-
-        function updateImageCount(count) {
-            const total = count ?? currentImages.length;
-
-            imageCount.textContent =
-                `${total} ${currentLanguage === "en" ? "images" : "張圖片"}`;
-        }
-
-        // =====================================
-        // 確定下載
-        // =====================================
-
-        downloadSelectedBtn.addEventListener("click", () => {
-            if (selectedUrls.size === 0) {
-                showToast(t("noSelection"));
-                return;
-            }
-
-            const urls = Array.from(selectedUrls);
-
-            // 原本的捷徑接收方式：
-            // 多個圖片網址以換行分隔
-            const urlText = urls.join("\n");
-
-            const shortcutLink =
-                `shortcuts://run-shortcut` +
-                `?name=${encodeURIComponent(SHORTCUT_NAME)}` +
-                `&input=text` +
-                `&text=${encodeURIComponent(urlText)}`;
-
-            showToast(t("downloading"));
-
-            window.location.href = shortcutLink;
-        });
-
-        // =====================================
-        // 安裝捷徑
-        // =====================================
-
-        document.getElementById("shortcutBtn")
-            .addEventListener("click", () => {
-                window.open(SHORTCUT_URL, "_blank");
-            });
-
-        // =====================================
-        // 貼圖教學
-        // =====================================
-
-        const guideModal = document.getElementById("guideModal");
-
-        document.getElementById("guideBtn")
-            .addEventListener("click", () => {
-                guideModal.classList.remove("hidden");
-            });
-
-        document.getElementById("closeGuideBtn")
-            .addEventListener("click", () => {
-                guideModal.classList.add("hidden");
-            });
-
-        guideModal.addEventListener("click", event => {
-            if (event.target === guideModal) {
-                guideModal.classList.add("hidden");
-            }
-        });
-
-        // =====================================
-        // 加入桌面
-        // =====================================
-
-        document.getElementById("homeBtn")
-            .addEventListener("click", () => {
-                showToast(
-                    currentLanguage === "en"
-                        ? "Use your browser menu to add this page to your home screen."
-                        : "請使用瀏覽器選單，將此網頁加入主畫面"
-                );
-            });
-
-        // =====================================
-        // 提示訊息
-        // =====================================
-
-        let toastTimer;
-
-        function showToast(message) {
-            toast.textContent = message;
-            toast.classList.add("show");
-
-            clearTimeout(toastTimer);
-
-            toastTimer = setTimeout(() => {
-                toast.classList.remove("show");
-            }, 2200);
-        }
-
-        // =====================================
-        // 初始化
-        // =====================================
-
-        applyLanguage();
-        loadCategories();
-    </script>
+        imageGrid.appendChild(card);
+      });
+    }
+
+    /* =========================
+       選取與取消選取
+    ========================= */
+
+    function toggleImageSelection(imageUrl, card) {
+      if (selectedUrls.has(imageUrl)) {
+        selectedUrls.delete(imageUrl);
+        card.classList.remove("selected");
+      } else {
+        selectedUrls.add(imageUrl);
+        card.classList.add("selected");
+      }
+
+      updateSelectedCount();
+    }
+
+    function updateSelectedCount() {
+      selectedCount.textContent = selectedUrls.size;
+      downloadButton.disabled = selectedUrls.size === 0;
+    }
+
+    /* =========================
+       一鍵全選
+       只選取目前系列及目前搜尋結果
+    ========================= */
+
+    function selectAllCurrentImages() {
+      const keyword = searchInput.value.trim().toLowerCase();
+
+      const filteredImages = currentImages.filter(file =>
+        file.name.toLowerCase().includes(keyword)
+      );
+
+      filteredImages.forEach(file => {
+        selectedUrls.add(getRawUrl(file.path));
+      });
+
+      renderImages();
+      updateSelectedCount();
+    }
+
+    /* =========================
+       取消全選
+       清除所有系列的已選取圖片
+    ========================= */
+
+    function clearSelection() {
+      selectedUrls.clear();
+      renderImages();
+      updateSelectedCount();
+    }
+
+    /* =========================
+       確定下載
+    ========================= */
+
+    function downloadSelected() {
+      if (selectedUrls.size === 0) {
+        alert(t("noSelection"));
+        return;
+      }
+
+      const urls = Array.from(selectedUrls);
+
+      const message = t("confirmDownload")
+        .replace("{count}", urls.length);
+
+      if (!confirm(message)) {
+        return;
+      }
+
+      // 多個網址以換行分隔，交給捷徑處理
+      const text = encodeURIComponent(urls.join("\n"));
+
+      const shortcutUrl =
+        `shortcuts://run-shortcut?name=${encodeURIComponent(SHORTCUT_NAME)}&input=text&text=${text}`;
+
+      window.location.href = shortcutUrl;
+    }
+
+    /* =========================
+       事件監聽
+    ========================= */
+
+    categorySelect.addEventListener("change", async () => {
+      const folder = allFolders.find(
+        item => item.path === categorySelect.value
+      );
+
+      if (folder) {
+        searchInput.value = "";
+        await loadImagesInFolder(folder);
+      }
+    });
+
+    searchInput.addEventListener("input", () => {
+      renderImages();
+    });
+
+    document
+      .getElementById("selectAllButton")
+      .addEventListener("click", selectAllCurrentImages);
+
+    document
+      .getElementById("clearSelectionButton")
+      .addEventListener("click", clearSelection);
+
+    downloadButton.addEventListener("click", downloadSelected);
+
+    document
+      .getElementById("refreshButton")
+      .addEventListener("click", async () => {
+        await loadCategories();
+      });
+
+    /* =========================
+       教學彈窗
+    ========================= */
+
+    document.getElementById("guideButton").addEventListener("click", () => {
+      guideModal.classList.remove("hidden");
+    });
+
+    document.getElementById("closeGuideButton").addEventListener("click", () => {
+      guideModal.classList.add("hidden");
+    });
+
+    document.getElementById("guideBackdrop").addEventListener("click", () => {
+      guideModal.classList.add("hidden");
+    });
+
+    /* =========================
+       啟動
+    ========================= */
+
+    applyLanguage();
+    updateSelectedCount();
+    loadCategories();
+  </script>
 </body>
 </html>
