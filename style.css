@@ -1,6 +1,6 @@
-/* =========================
-   1. 全域設定與配色
-========================= */
+/* ==================================================
+   01. 全域設定與原始配色
+================================================== */
 
 * {
     box-sizing: border-box;
@@ -9,53 +9,45 @@
 :root {
     color-scheme: dark;
 
-    /* 網頁背景 */
+    /* 網頁背景與區塊底色 */
     --background: #151821;
-
-    /* 功能按鈕與區塊底色 */
     --surface: #1E222D;
-
-    /* 未選取貼圖方格 */
     --card: #212531;
-
-    /* 已選取貼圖方格 */
     --card-selected: #2B2C33;
-
-    /* 底部懸浮操作列 */
     --selection-bar: #222530;
-
-    /* 取消全選按鈕 */
     --button-secondary: #383C47;
 
     /* 香檳金強調色 */
     --accent: #E5D3A3;
-
-    /* 下載按鈕與勾勾文字 */
     --accent-text: #151821;
 
     /* 文字顏色 */
     --text: #FFFFFF;
     --muted: #9BA1AE;
 
-    /* 邊框 */
+    /* 邊框與圓圈 */
     --border: #3F4554;
-
-    /* 未勾選圓圈線條 */
     --circle-border: #C8CDD6;
 
     /* 錯誤提示 */
     --danger: #E07878;
 }
 
+/* ==================================================
+   02. 網頁基本設定
+================================================== */
+
 html {
     min-height: 100%;
     background: var(--background);
+    color-scheme: dark;
 }
 
 body {
     margin: 0;
     min-height: 100vh;
     overflow-x: hidden;
+
     background: var(--background);
     color: var(--text);
 
@@ -84,24 +76,29 @@ button {
     cursor: pointer;
 }
 
+a {
+    color: inherit;
+}
+
 .hidden {
     display: none !important;
 }
 
-/* =========================
-   2. 頁面主容器
-========================= */
+/* ==================================================
+   03. 頁面主容器
+================================================== */
 
 .page {
     width: min(1200px, calc(100% - 40px));
     min-height: 100vh;
+
     margin: 0 auto;
     padding: 28px 0 125px;
 }
 
-/* =========================
-   3. 頂部標題
-========================= */
+/* ==================================================
+   04. 頂部標題
+================================================== */
 
 .header {
     margin-bottom: 32px;
@@ -147,12 +144,13 @@ button {
     letter-spacing: 2px;
 }
 
-/* =========================
-   4. 右上角語言選單
-========================= */
+/* ==================================================
+   05. 右上角語言選單
+================================================== */
 
 .language-select {
     position: absolute;
+
     top: 0;
     right: 0;
 
@@ -170,8 +168,8 @@ button {
     outline: none;
 
     transition:
-        border-color 0.2s,
-        background 0.2s;
+        background 0.2s ease,
+        border-color 0.2s ease;
 }
 
 .language-select:hover {
@@ -182,9 +180,9 @@ button {
     border-color: var(--accent);
 }
 
-/* =========================
-   5. 頂部功能按鈕
-========================= */
+/* ==================================================
+   06. 頂部三個功能按鈕
+================================================== */
 
 .top-buttons {
     display: flex;
@@ -215,9 +213,9 @@ button {
     cursor: pointer;
 
     transition:
-        background 0.2s,
-        border-color 0.2s,
-        transform 0.2s;
+        background 0.2s ease,
+        border-color 0.2s ease,
+        transform 0.2s ease;
 }
 
 .top-button:hover {
@@ -231,9 +229,9 @@ button {
     transform: scale(0.97);
 }
 
-/* =========================
-   6. 分類選單
-========================= */
+/* ==================================================
+   07. 分類選單
+================================================== */
 
 .toolbar {
     display: grid;
@@ -252,7 +250,6 @@ button {
 
 .category-area label {
     color: var(--muted);
-
     font-size: 13px;
 }
 
@@ -272,8 +269,8 @@ button {
     cursor: pointer;
 
     transition:
-        border-color 0.2s,
-        background 0.2s;
+        background 0.2s ease,
+        border-color 0.2s ease;
 }
 
 .category-area select:hover {
@@ -284,9 +281,9 @@ button {
     border-color: var(--accent);
 }
 
-/* =========================
-   7. 貼圖區標題
-========================= */
+/* ==================================================
+   08. 貼圖區標題與重新整理
+================================================== */
 
 .gallery-heading {
     display: flex;
@@ -314,8 +311,6 @@ button {
     font-size: 13px;
 }
 
-/* 重新整理按鈕 */
-
 .refresh-button {
     padding: 9px 14px;
 
@@ -328,8 +323,8 @@ button {
     cursor: pointer;
 
     transition:
-        background 0.2s,
-        border-color 0.2s;
+        background 0.2s ease,
+        border-color 0.2s ease;
 }
 
 .refresh-button:hover {
@@ -337,9 +332,9 @@ button {
     border-color: var(--accent);
 }
 
-/* =========================
-   8. 貼圖網格
-========================= */
+/* ==================================================
+   09. 貼圖網格
+================================================== */
 
 .image-grid {
     display: grid;
@@ -372,14 +367,13 @@ button {
     cursor: pointer;
 
     transition:
-        border-color 0.18s,
-        background 0.18s,
-        transform 0.18s;
+        border-color 0.18s ease,
+        background 0.18s ease,
+        transform 0.18s ease;
 }
 
 .image-card:hover {
     background: #292E3A;
-
     transform: translateY(-2px);
 }
 
@@ -407,19 +401,25 @@ button {
     display: none !important;
 }
 
-/* =========================
-   9. 貼圖選取狀態
-========================= */
+/* ==================================================
+   10. 貼圖選取狀態
+================================================== */
 
-/* 已選取卡片 */
+/* 未選取 */
 
-.image-card.selected {
-    border: 2px solid var(--accent);
-
-    background: var(--card-selected);
+.image-card:not(.selected) {
+    background: var(--card);
+    border-color: var(--border);
 }
 
-/* 勾選圖示 */
+/* 已選取 */
+
+.image-card.selected {
+    background: var(--card-selected);
+    border: 2px solid var(--accent);
+}
+
+/* 右上角未選取圓圈 */
 
 .checkmark {
     position: absolute;
@@ -448,13 +448,13 @@ button {
     transform: scale(0.75);
 
     transition:
-        opacity 0.18s,
-        transform 0.18s,
-        background 0.18s,
-        border-color 0.18s;
+        opacity 0.18s ease,
+        transform 0.18s ease,
+        background 0.18s ease,
+        border-color 0.18s ease;
 }
 
-/* 已選取時顯示香檳金圓圈 */
+/* 已選取圓圈 */
 
 .image-card.selected .checkmark {
     border-color: var(--accent);
@@ -467,9 +467,9 @@ button {
     transform: scale(1);
 }
 
-/* =========================
-   10. 載入與錯誤提示
-========================= */
+/* ==================================================
+   11. 載入、錯誤與空白訊息
+================================================== */
 
 .message {
     padding: 45px 15px;
@@ -484,9 +484,9 @@ button {
     color: var(--danger);
 }
 
-/* =========================
-   11. 底部懸浮操作列
-========================= */
+/* ==================================================
+   12. 底部懸浮操作列
+================================================== */
 
 .selection-bar {
     position: fixed;
@@ -510,8 +510,10 @@ button {
 
     border-top: 1px solid var(--border);
 
+    /* 原始底色：#222530 */
     background: rgba(34, 37, 48, 0.94);
 
+    /* 毛玻璃效果 */
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
 }
@@ -532,7 +534,6 @@ button {
 
 .selection-info strong {
     color: var(--accent);
-
     font-size: 19px;
 }
 
@@ -545,9 +546,9 @@ button {
     gap: 9px;
 }
 
-/* =========================
-   12. 底部操作按鈕
-========================= */
+/* ==================================================
+   13. 底部操作按鈕
+================================================== */
 
 .action-button {
     min-height: 41px;
@@ -563,9 +564,9 @@ button {
     cursor: pointer;
 
     transition:
-        background 0.2s,
-        opacity 0.2s,
-        transform 0.2s;
+        background 0.2s ease,
+        opacity 0.2s ease,
+        transform 0.2s ease;
 }
 
 .action-button:hover:not(:disabled) {
@@ -587,7 +588,7 @@ button {
     background: var(--button-secondary);
 }
 
-/* 取消全選 */
+/* 取消全選按鈕 */
 
 #clearSelectionButton {
     background: var(--button-secondary);
@@ -600,7 +601,7 @@ button {
     background: #454A57;
 }
 
-/* 確定下載 */
+/* 確定下載按鈕 */
 
 .action-button.primary {
     border-color: var(--accent);
@@ -613,16 +614,16 @@ button {
     background: #F0DFB2;
 }
 
-/* 無法點擊 */
+/* 無法點擊的按鈕 */
 
 .action-button:disabled {
     opacity: 0.4;
     cursor: not-allowed;
 }
 
-/* =========================
-   13. 教學彈窗
-========================= */
+/* ==================================================
+   14. 教學彈窗
+================================================== */
 
 .modal {
     position: fixed;
@@ -712,16 +713,16 @@ button {
 
     cursor: pointer;
 
-    transition: background 0.2s;
+    transition: background 0.2s ease;
 }
 
 .modal-close:hover {
     background: #454A57;
 }
 
-/* =========================
-   14. 平板版面
-========================= */
+/* ==================================================
+   15. 平板版面
+================================================== */
 
 @media (max-width: 900px) {
 
@@ -731,9 +732,9 @@ button {
 
 }
 
-/* =========================
-   15. 手機版面
-========================= */
+/* ==================================================
+   16. 手機版面
+================================================== */
 
 @media (max-width: 600px) {
 
@@ -837,7 +838,6 @@ button {
 
     .image-card {
         padding: 6px;
-
         border-radius: 10px;
     }
 
@@ -901,9 +901,9 @@ button {
 
 }
 
-/* =========================
-   16. 小螢幕手機
-========================= */
+/* ==================================================
+   17. 小螢幕手機
+================================================== */
 
 @media (max-width: 360px) {
 
