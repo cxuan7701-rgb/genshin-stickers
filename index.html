@@ -1,25 +1,31 @@
+
 <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#101a2b">
+  <meta name="theme-color" content="#151821">
   <title>派蒙的畫作</title>
+
   <link rel="stylesheet" href="style.css">
+
   <!-- 網站分頁 Icon -->
   <link rel="icon" type="image/png" href="./icon.png">
 
   <!-- iPhone 主畫面 Icon -->
   <link rel="apple-touch-icon" href="./icon.png">
 </head>
+
 <body>
   <div class="page">
+
     <header class="header">
       <div class="header-top">
         <div class="logo-area">
           <h1 id="pageTitle">派蒙的畫作</h1>
           <p id="pageSubtitle">原神貼圖收藏</p>
         </div>
+
         <select id="languageSelect" class="language-select" aria-label="Language">
           <option value="zh-TW">繁體中文</option>
           <option value="zh-CN">简体中文</option>
@@ -30,7 +36,13 @@
       </div>
 
       <nav class="top-buttons">
-        <a class="top-button" href="./" id="desktopAppButton">桌面 App</a>
+
+        <!-- 桌面 App：開啟 install.png 彈窗 -->
+        <button class="top-button" id="desktopAppButton" type="button">
+          桌面 App
+        </button>
+
+        <!-- 安裝捷徑 -->
         <a
           class="top-button"
           href="https://www.icloud.com/shortcuts/c7d92ded99d348339807fd89d406add5"
@@ -38,9 +50,12 @@
           rel="noopener"
           id="installShortcutButton"
         >安裝捷徑</a>
+
+        <!-- 貼圖教學 -->
         <button class="top-button" id="guideButton" type="button">
           <span id="guideButtonText">貼圖教學</span>
         </button>
+
       </nav>
     </header>
 
@@ -59,6 +74,7 @@
           <h2 id="currentFolderTitle">載入中...</h2>
           <p id="imageCount">0 張貼圖</p>
         </div>
+
         <button id="refreshButton" class="refresh-button" type="button">
           <span id="refreshButtonText">重新整理</span>
         </button>
@@ -67,8 +83,11 @@
       <div id="loadingMessage" class="message">
         正在載入貼圖...
       </div>
+
       <div id="errorMessage" class="message error-message hidden"></div>
+
       <section id="imageGrid" class="image-grid"></section>
+
       <div id="emptyMessage" class="message hidden">
         找不到貼圖
       </div>
@@ -80,29 +99,77 @@
         <strong id="selectedCount">0</strong>
         <span id="selectedUnit">張</span>
       </div>
+
       <div class="selection-actions">
         <button id="selectAllButton" class="action-button secondary" type="button">
           一鍵全選
         </button>
+
         <button id="clearSelectionButton" class="action-button secondary" type="button">
           取消全選
         </button>
+
         <button id="downloadButton" class="action-button primary" type="button" disabled>
           確定下載
         </button>
       </div>
     </footer>
+
   </div>
+
+  <!-- =========================
+       桌面 App 彈窗
+       顯示 install.png
+  ========================= -->
+
+  <div id="installModal" class="modal hidden">
+    <div class="modal-backdrop" id="installBackdrop"></div>
+
+    <div class="modal-content">
+      <button
+        class="modal-close"
+        id="closeInstallButton"
+        type="button"
+        aria-label="關閉"
+      >×</button>
+
+      <h2 id="installTitle">桌面 App 安裝教學</h2>
+
+      <img
+        src="./install.png"
+        alt="桌面 App 安裝教學"
+        id="installImage"
+      >
+    </div>
+  </div>
+
+  <!-- =========================
+       貼圖教學彈窗
+       顯示 guide.png
+  ========================= -->
 
   <div id="guideModal" class="modal hidden">
     <div class="modal-backdrop" id="guideBackdrop"></div>
+
     <div class="modal-content">
-      <button class="modal-close" id="closeGuideButton" type="button">×</button>
+      <button
+        class="modal-close"
+        id="closeGuideButton"
+        type="button"
+        aria-label="關閉"
+      >×</button>
+
       <h2 id="guideTitle">貼圖下載教學</h2>
+
       <p id="guideDescription">
         選取想下載的貼圖，再按下確定下載即可。
       </p>
-      <img src="guide.png" alt="貼圖下載教學" id="guideImage">
+
+      <img
+        src="./guide.png"
+        alt="貼圖下載教學"
+        id="guideImage"
+      >
     </div>
   </div>
 
@@ -126,6 +193,7 @@
         pageTitle: "派蒙的畫作",
         pageSubtitle: "原神貼圖收藏",
         desktopApp: "桌面 App",
+        installTitle: "桌面 App 安裝教學",
         installShortcut: "安裝捷徑",
         guideButton: "貼圖教學",
         categoryLabel: "選擇系列",
@@ -152,6 +220,7 @@
         pageTitle: "派蒙的画作",
         pageSubtitle: "原神贴图收藏",
         desktopApp: "桌面 App",
+        installTitle: "桌面 App 安装教学",
         installShortcut: "安装捷径",
         guideButton: "贴图教学",
         categoryLabel: "选择系列",
@@ -178,6 +247,7 @@
         pageTitle: "Paimon's Artwork",
         pageSubtitle: "Genshin Sticker Collection",
         desktopApp: "Desktop App",
+        installTitle: "Desktop App Installation Guide",
         installShortcut: "Install Shortcut",
         guideButton: "Guide",
         categoryLabel: "Select Series",
@@ -204,6 +274,7 @@
         pageTitle: "パイモンの作品",
         pageSubtitle: "原神スタンプコレクション",
         desktopApp: "デスクトップ App",
+        installTitle: "デスクトップ App インストールガイド",
         installShortcut: "ショートカットをインストール",
         guideButton: "使い方",
         categoryLabel: "シリーズを選択",
@@ -230,6 +301,7 @@
         pageTitle: "페이몬의 그림",
         pageSubtitle: "원신 스티커 컬렉션",
         desktopApp: "데스크톱 App",
+        installTitle: "데스크톱 App 설치 안내",
         installShortcut: "단축어 설치",
         guideButton: "사용 방법",
         categoryLabel: "시리즈 선택",
@@ -272,7 +344,9 @@
     const imageCount = document.getElementById("imageCount");
     const selectedCount = document.getElementById("selectedCount");
     const downloadButton = document.getElementById("downloadButton");
+
     const guideModal = document.getElementById("guideModal");
+    const installModal = document.getElementById("installModal");
 
     function t(key) {
       return translations[currentLanguage]?.[key]
@@ -280,7 +354,10 @@
         ?? key;
     }
 
-    // 自動產生系列名稱，不顯示 GitHub 資料夾原名
+    /* =========================
+       系列名稱
+    ========================= */
+
     function getSeriesName(index) {
       const number = index + 1;
 
@@ -294,6 +371,10 @@
 
       return names[currentLanguage] || names["zh-TW"];
     }
+
+    /* =========================
+       語言切換
+    ========================= */
 
     function applyLanguage() {
       document.documentElement.lang = currentLanguage;
@@ -309,10 +390,12 @@
       document.getElementById("selectAllButton").textContent = t("selectAll");
       document.getElementById("clearSelectionButton").textContent = t("clearSelection");
 
-      downloadButton.textContent = t("download");
-      document.getElementById("refreshButtonText").textContent = t("refresh");
+      document.getElementById("installTitle").textContent = t("installTitle");
       document.getElementById("guideTitle").textContent = t("guideTitle");
       document.getElementById("guideDescription").textContent = t("guideDescription");
+
+      downloadButton.textContent = t("download");
+      document.getElementById("refreshButtonText").textContent = t("refresh");
 
       document.title = t("pageTitle");
 
@@ -336,7 +419,7 @@
 
     async function getGitHubContents(path) {
       const url =
-        `https://api.github.com/repos/cxuan7701-rgb/genshin-stickers/contents/${path}?ref=main`;
+        `https://api.github.com/repos/${GITHUB_USERNAME}/${REPO_NAME}/contents/${path}?ref=${BRANCH_NAME}`;
 
       const response = await fetch(url);
 
@@ -353,7 +436,7 @@
         .map(part => encodeURIComponent(part))
         .join("/");
 
-      return `https://raw.githubusercontent.com/cxuan7701-rgb/genshin-stickers/main/${encodedPath}`;
+      return `https://raw.githubusercontent.com/${GITHUB_USERNAME}/${REPO_NAME}/${BRANCH_NAME}/${encodedPath}`;
     }
 
     /* =========================
@@ -366,7 +449,7 @@
       errorMessage.classList.add("hidden");
 
       try {
-        const contents = await getGitHubContents("categories");
+        const contents = await getGitHubContents(CATEGORY_FOLDER);
 
         allFolders = contents
           .filter(item => item.type === "dir")
@@ -607,7 +690,7 @@
     }
 
     /* =========================
-       事件
+       分類切換
     ========================= */
 
     categorySelect.addEventListener("change", async () => {
@@ -619,6 +702,10 @@
         await loadImagesInFolder(folder);
       }
     });
+
+    /* =========================
+       功能按鈕事件
+    ========================= */
 
     document
       .getElementById("selectAllButton")
@@ -635,19 +722,58 @@
       .addEventListener("click", loadCategories);
 
     /* =========================
-       教學視窗
+       桌面 App 彈窗
     ========================= */
 
-    document.getElementById("guideButton").addEventListener("click", () => {
-      guideModal.classList.remove("hidden");
-    });
+    document
+      .getElementById("desktopAppButton")
+      .addEventListener("click", () => {
+        installModal.classList.remove("hidden");
+      });
 
-    document.getElementById("closeGuideButton").addEventListener("click", () => {
-      guideModal.classList.add("hidden");
-    });
+    document
+      .getElementById("closeInstallButton")
+      .addEventListener("click", () => {
+        installModal.classList.add("hidden");
+      });
 
-    document.getElementById("guideBackdrop").addEventListener("click", () => {
-      guideModal.classList.add("hidden");
+    document
+      .getElementById("installBackdrop")
+      .addEventListener("click", () => {
+        installModal.classList.add("hidden");
+      });
+
+    /* =========================
+       貼圖教學彈窗
+    ========================= */
+
+    document
+      .getElementById("guideButton")
+      .addEventListener("click", () => {
+        guideModal.classList.remove("hidden");
+      });
+
+    document
+      .getElementById("closeGuideButton")
+      .addEventListener("click", () => {
+        guideModal.classList.add("hidden");
+      });
+
+    document
+      .getElementById("guideBackdrop")
+      .addEventListener("click", () => {
+        guideModal.classList.add("hidden");
+      });
+
+    /* =========================
+       按下 ESC 關閉彈窗
+    ========================= */
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape") {
+        installModal.classList.add("hidden");
+        guideModal.classList.add("hidden");
+      }
     });
 
     /* =========================
@@ -657,6 +783,7 @@
     applyLanguage();
     updateSelectedCount();
     loadCategories();
+
   </script>
 </body>
 </html>

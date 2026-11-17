@@ -1,3 +1,4 @@
+
 /* =========================
    1. 全域配色
 ========================= */
@@ -231,9 +232,6 @@ button {
     color: var(--text);
 
     outline: none;
-}
-
-.category-area select {
     cursor: pointer;
 }
 
@@ -526,7 +524,8 @@ button {
 }
 
 /* =========================
-   13. 教學彈窗
+   13. 彈窗共用樣式
+   桌面 App 與貼圖教學共用
 ========================= */
 
 .modal {
@@ -603,6 +602,10 @@ button {
 
     font-size: 25px;
     cursor: pointer;
+}
+
+.modal-close:hover {
+    background: #454A57;
 }
 
 /* =========================
