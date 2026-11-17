@@ -1,6 +1,6 @@
 
 /* =========================
-   基本配色
+   1. 全域配色
 ========================= */
 
 * {
@@ -10,38 +10,40 @@
 :root {
   color-scheme: dark;
 
-  --background: #101a2b;
-  --surface: #19263a;
-  --surface-hover: #243650;
-  --border: #34445c;
+  /* 背景 */
+  --background: #151821;
+  --surface: #1E222D;
+  --card: #212531;
+  --card-selected: #2B2C33;
+  --selection-bar: #222530;
 
-  --text: #f3eee2;
-  --muted: #aab7c9;
+  /* 按鈕 */
+  --button-secondary: #383C47;
 
-  --accent: #d9b66d;
-  --accent-hover: #ebcb88;
+  /* 強調色 */
+  --accent: #E5D3A3;
+  --accent-text: #151821;
 
-  --danger: #e07878;
+  /* 文字 */
+  --text: #FFFFFF;
+  --muted: #9BA1AE;
+
+  /* 邊框 */
+  --border: #3F4554;
+  --circle-border: #C8CDD6;
+
+  --danger: #E07878;
 }
 
 html {
   min-height: 100%;
-  background: #101a2b;
+  background: var(--background);
 }
 
 body {
   margin: 0;
   min-height: 100vh;
-
-  background:
-    radial-gradient(
-      ellipse at 50% 0%,
-      #1d304b 0%,
-      #142239 45%,
-      #0c1525 100%
-    );
-
-  background-attachment: fixed;
+  background: var(--background);
   color: var(--text);
 
   font-family:
@@ -73,7 +75,7 @@ button {
 }
 
 /* =========================
-   頁面
+   2. 頁面
 ========================= */
 
 .page {
@@ -84,7 +86,7 @@ button {
 }
 
 /* =========================
-   頂部
+   3. 頂部標題
 ========================= */
 
 .header {
@@ -111,25 +113,23 @@ button {
 .logo-area h1 {
   margin: 0;
 
-  color: #e6c47b;
+  color: #FFFFFF;
   font-size: 32px;
   font-weight: 750;
   letter-spacing: 2px;
 
-  text-shadow:
-    0 0 12px rgba(217, 182, 109, 0.18),
-    0 2px 5px rgba(0, 0, 0, 0.35);
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
 }
 
 .logo-area p {
   margin: 9px 0 0;
-  color: #b9c5d6;
+  color: var(--muted);
   font-size: 14px;
   letter-spacing: 2px;
 }
 
 /* =========================
-   語言選單
+   4. 語言選單
 ========================= */
 
 .language-select {
@@ -157,7 +157,7 @@ button {
 }
 
 /* =========================
-   頂部按鈕
+   5. 頂部功能按鈕
 ========================= */
 
 .top-buttons {
@@ -192,13 +192,13 @@ button {
 }
 
 .top-button:hover {
-  background: var(--surface-hover);
+  background: #292E3A;
   border-color: var(--accent);
   transform: translateY(-1px);
 }
 
 /* =========================
-   分類與搜尋
+   6. 分類與搜尋
 ========================= */
 
 .toolbar {
@@ -240,8 +240,13 @@ button {
   cursor: pointer;
 }
 
+.search-area input::placeholder {
+  color: var(--muted);
+  opacity: 1;
+}
+
 /* =========================
-   圖片區標題
+   7. 圖片區標題
 ========================= */
 
 .gallery-heading {
@@ -254,7 +259,7 @@ button {
 
 .gallery-heading h2 {
   margin: 0;
-  color: #e6c47b;
+  color: var(--text);
   font-size: 21px;
   font-weight: 700;
 }
@@ -278,12 +283,12 @@ button {
 }
 
 .refresh-button:hover {
-  background: var(--surface-hover);
+  background: #292E3A;
   border-color: var(--accent);
 }
 
 /* =========================
-   圖片網格
+   8. 圖片網格
 ========================= */
 
 .image-grid {
@@ -305,10 +310,10 @@ button {
 
   overflow: hidden;
 
-  border: 2px solid transparent;
+  border: 2px solid var(--border);
   border-radius: 13px;
 
-  background: var(--surface);
+  background: var(--card);
 
   cursor: pointer;
 
@@ -319,7 +324,7 @@ button {
 }
 
 .image-card:hover {
-  background: var(--surface-hover);
+  background: #292E3A;
   transform: translateY(-2px);
 }
 
@@ -328,22 +333,27 @@ button {
   width: 100%;
   height: 100%;
   object-fit: contain;
+
   user-select: none;
   pointer-events: none;
 }
+
+/* 不顯示圖片檔名 */
 
 .image-filename {
   display: none !important;
 }
 
 /* =========================
-   已選取狀態
+   9. 圖片選取狀態
 ========================= */
 
 .image-card.selected {
-  border-color: var(--accent);
-  background: #302f2a;
+  border: 2px solid var(--accent);
+  background: var(--card-selected);
 }
+
+/* 已勾選圓圈 */
 
 .checkmark {
   position: absolute;
@@ -357,10 +367,11 @@ button {
   width: 25px;
   height: 25px;
 
+  border: 1px solid var(--accent);
   border-radius: 50%;
 
   background: var(--accent);
-  color: #222;
+  color: var(--accent-text);
 
   font-size: 15px;
   font-weight: 800;
@@ -379,7 +390,7 @@ button {
 }
 
 /* =========================
-   訊息
+   10. 載入與錯誤訊息
 ========================= */
 
 .message {
@@ -394,7 +405,7 @@ button {
 }
 
 /* =========================
-   底部操作列
+   11. 底部懸浮操作列
 ========================= */
 
 .selection-bar {
@@ -412,9 +423,9 @@ button {
   min-height: 78px;
   padding: 12px max(24px, calc((100% - 1200px) / 2));
 
-  border-top: 1px solid #34445c;
+  border-top: 1px solid var(--border);
 
-  background: rgba(13, 24, 42, 0.96);
+  background: rgba(34, 37, 48, 0.94);
 
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
@@ -425,7 +436,7 @@ button {
   align-items: center;
   gap: 7px;
 
-  color: var(--muted);
+  color: var(--text);
   font-size: 14px;
   white-space: nowrap;
 }
@@ -440,6 +451,10 @@ button {
   align-items: center;
   gap: 9px;
 }
+
+/* =========================
+   12. 底部操作按鈕
+========================= */
 
 .action-button {
   min-height: 41px;
@@ -463,24 +478,39 @@ button {
   transform: translateY(-1px);
 }
 
+/* 一般按鈕 */
+
 .action-button.secondary {
   background: var(--surface);
   color: var(--text);
 }
 
 .action-button.secondary:hover {
-  background: var(--surface-hover);
-  border-color: var(--accent);
+  background: var(--button-secondary);
 }
+
+/* 取消全選按鈕 */
+
+#clearSelectionButton {
+  background: var(--button-secondary);
+  color: var(--text);
+  border-color: var(--border);
+}
+
+#clearSelectionButton:hover {
+  background: #454A57;
+}
+
+/* 下載按鈕 */
 
 .action-button.primary {
   border-color: var(--accent);
   background: var(--accent);
-  color: #24201a;
+  color: var(--accent-text);
 }
 
 .action-button.primary:hover:not(:disabled) {
-  background: var(--accent-hover);
+  background: #F0DFB2;
 }
 
 .action-button:disabled {
@@ -489,7 +519,7 @@ button {
 }
 
 /* =========================
-   教學彈窗
+   13. 教學彈窗
 ========================= */
 
 .modal {
@@ -523,12 +553,12 @@ button {
   border: 1px solid var(--border);
   border-radius: 16px;
 
-  background: #19263a;
+  background: var(--surface);
 }
 
 .modal-content h2 {
   margin: 0 35px 12px 0;
-  color: var(--accent);
+  color: var(--text);
   font-size: 21px;
 }
 
@@ -557,7 +587,7 @@ button {
   border: 0;
   border-radius: 50%;
 
-  background: var(--surface-hover);
+  background: var(--button-secondary);
   color: var(--text);
 
   font-size: 25px;
@@ -565,7 +595,7 @@ button {
 }
 
 /* =========================
-   平板
+   14. 平板
 ========================= */
 
 @media (max-width: 900px) {
@@ -575,7 +605,7 @@ button {
 }
 
 /* =========================
-   手機
+   15. 手機
 ========================= */
 
 @media (max-width: 600px) {
@@ -704,7 +734,7 @@ button {
 }
 
 /* =========================
-   小螢幕手機
+   16. 小螢幕手機
 ========================= */
 
 @media (max-width: 360px) {
