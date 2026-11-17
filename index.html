@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
@@ -8,17 +7,14 @@
   <title>派蒙的畫作</title>
   <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
   <div class="page">
-
     <header class="header">
       <div class="header-top">
         <div class="logo-area">
           <h1 id="pageTitle">派蒙的畫作</h1>
           <p id="pageSubtitle">原神貼圖收藏</p>
         </div>
-
         <select id="languageSelect" class="language-select" aria-label="Language">
           <option value="zh-TW">繁體中文</option>
           <option value="zh-CN">简体中文</option>
@@ -30,7 +26,6 @@
 
       <nav class="top-buttons">
         <a class="top-button" href="./" id="desktopAppButton">桌面 App</a>
-
         <a
           class="top-button"
           href="https://www.icloud.com/shortcuts/c7d92ded99d348339807fd89d406add5"
@@ -38,7 +33,6 @@
           rel="noopener"
           id="installShortcutButton"
         >安裝捷徑</a>
-
         <button class="top-button" id="guideButton" type="button">
           <span id="guideButtonText">貼圖教學</span>
         </button>
@@ -53,16 +47,6 @@
             <option value="">載入中...</option>
           </select>
         </div>
-
-        <div class="search-area">
-          <label for="searchInput" id="searchLabel">搜尋貼圖</label>
-          <input
-            id="searchInput"
-            type="search"
-            placeholder="搜尋貼圖..."
-            autocomplete="off"
-          >
-        </div>
       </section>
 
       <section class="gallery-heading">
@@ -70,7 +54,6 @@
           <h2 id="currentFolderTitle">載入中...</h2>
           <p id="imageCount">0 張貼圖</p>
         </div>
-
         <button id="refreshButton" class="refresh-button" type="button">
           <span id="refreshButtonText">重新整理</span>
         </button>
@@ -79,11 +62,8 @@
       <div id="loadingMessage" class="message">
         正在載入貼圖...
       </div>
-
       <div id="errorMessage" class="message error-message hidden"></div>
-
       <section id="imageGrid" class="image-grid"></section>
-
       <div id="emptyMessage" class="message hidden">
         找不到貼圖
       </div>
@@ -95,16 +75,13 @@
         <strong id="selectedCount">0</strong>
         <span id="selectedUnit">張</span>
       </div>
-
       <div class="selection-actions">
         <button id="selectAllButton" class="action-button secondary" type="button">
           一鍵全選
         </button>
-
         <button id="clearSelectionButton" class="action-button secondary" type="button">
           取消全選
         </button>
-
         <button id="downloadButton" class="action-button primary" type="button" disabled>
           確定下載
         </button>
@@ -114,7 +91,6 @@
 
   <div id="guideModal" class="modal hidden">
     <div class="modal-backdrop" id="guideBackdrop"></div>
-
     <div class="modal-content">
       <button class="modal-close" id="closeGuideButton" type="button">×</button>
       <h2 id="guideTitle">貼圖下載教學</h2>
@@ -134,7 +110,6 @@
     const REPO_NAME = "genshin-stickers";
     const BRANCH_NAME = "main";
     const CATEGORY_FOLDER = "categories";
-
     const SHORTCUT_NAME = "一鍵下載貼圖";
 
     /* =========================
@@ -149,12 +124,9 @@
         installShortcut: "安裝捷徑",
         guideButton: "貼圖教學",
         categoryLabel: "選擇系列",
-        searchLabel: "搜尋貼圖",
-        searchPlaceholder: "搜尋貼圖...",
         loading: "正在載入貼圖...",
         loadingCategories: "正在讀取系列...",
         noImages: "這個系列目前沒有貼圖",
-        noSearchResults: "找不到符合條件的貼圖",
         imageCount: "張貼圖",
         selectedLabel: "已選取",
         selectedUnit: "張",
@@ -178,12 +150,9 @@
         installShortcut: "安装捷径",
         guideButton: "贴图教学",
         categoryLabel: "选择系列",
-        searchLabel: "搜索贴图",
-        searchPlaceholder: "搜索贴图...",
         loading: "正在加载贴图...",
         loadingCategories: "正在读取系列...",
         noImages: "这个系列目前没有贴图",
-        noSearchResults: "找不到符合条件的贴图",
         imageCount: "张贴图",
         selectedLabel: "已选择",
         selectedUnit: "张",
@@ -207,12 +176,9 @@
         installShortcut: "Install Shortcut",
         guideButton: "Guide",
         categoryLabel: "Select Series",
-        searchLabel: "Search Stickers",
-        searchPlaceholder: "Search stickers...",
         loading: "Loading stickers...",
         loadingCategories: "Loading series...",
         noImages: "There are no stickers in this series.",
-        noSearchResults: "No matching stickers found.",
         imageCount: "stickers",
         selectedLabel: "Selected",
         selectedUnit: "",
@@ -236,12 +202,9 @@
         installShortcut: "ショートカットをインストール",
         guideButton: "使い方",
         categoryLabel: "シリーズを選択",
-        searchLabel: "スタンプを検索",
-        searchPlaceholder: "スタンプを検索...",
         loading: "スタンプを読み込み中...",
         loadingCategories: "シリーズを読み込み中...",
         noImages: "このシリーズにはスタンプがありません。",
-        noSearchResults: "該当するスタンプがありません。",
         imageCount: "枚",
         selectedLabel: "選択中",
         selectedUnit: "枚",
@@ -265,12 +228,9 @@
         installShortcut: "단축어 설치",
         guideButton: "사용 방법",
         categoryLabel: "시리즈 선택",
-        searchLabel: "스티커 검색",
-        searchPlaceholder: "스티커 검색...",
         loading: "스티커를 불러오는 중...",
         loadingCategories: "시리즈를 불러오는 중...",
         noImages: "이 시리즈에는 스티커가 없습니다.",
-        noSearchResults: "검색 결과가 없습니다.",
         imageCount: "장",
         selectedLabel: "선택됨",
         selectedUnit: "장",
@@ -299,19 +259,14 @@
 
     const languageSelect = document.getElementById("languageSelect");
     const categorySelect = document.getElementById("categorySelect");
-    const searchInput = document.getElementById("searchInput");
     const imageGrid = document.getElementById("imageGrid");
-
     const loadingMessage = document.getElementById("loadingMessage");
     const errorMessage = document.getElementById("errorMessage");
     const emptyMessage = document.getElementById("emptyMessage");
-
     const currentFolderTitle = document.getElementById("currentFolderTitle");
     const imageCount = document.getElementById("imageCount");
-
     const selectedCount = document.getElementById("selectedCount");
     const downloadButton = document.getElementById("downloadButton");
-
     const guideModal = document.getElementById("guideModal");
 
     function t(key) {
@@ -340,24 +295,17 @@
 
       document.getElementById("pageTitle").textContent = t("pageTitle");
       document.getElementById("pageSubtitle").textContent = t("pageSubtitle");
-
       document.getElementById("desktopAppButton").textContent = t("desktopApp");
       document.getElementById("installShortcutButton").textContent = t("installShortcut");
       document.getElementById("guideButtonText").textContent = t("guideButton");
-
       document.getElementById("categoryLabel").textContent = t("categoryLabel");
-      document.getElementById("searchLabel").textContent = t("searchLabel");
-      searchInput.placeholder = t("searchPlaceholder");
-
       document.getElementById("selectedLabel").textContent = t("selectedLabel");
       document.getElementById("selectedUnit").textContent = t("selectedUnit");
-
       document.getElementById("selectAllButton").textContent = t("selectAll");
       document.getElementById("clearSelectionButton").textContent = t("clearSelection");
+
       downloadButton.textContent = t("download");
-
       document.getElementById("refreshButtonText").textContent = t("refresh");
-
       document.getElementById("guideTitle").textContent = t("guideTitle");
       document.getElementById("guideDescription").textContent = t("guideDescription");
 
@@ -429,9 +377,12 @@
           currentFolder = null;
           currentImages = [];
           imageGrid.innerHTML = "";
+
           loadingMessage.classList.add("hidden");
+
           emptyMessage.textContent = t("noImages");
           emptyMessage.classList.remove("hidden");
+
           currentFolderTitle.textContent = "";
           imageCount.textContent = `0 ${t("imageCount")}`;
           return;
@@ -447,6 +398,7 @@
 
       } catch (error) {
         console.error(error);
+
         loadingMessage.classList.add("hidden");
         errorMessage.textContent = t("loadError");
         errorMessage.classList.remove("hidden");
@@ -458,8 +410,10 @@
 
       allFolders.forEach((folder, index) => {
         const option = document.createElement("option");
+
         option.value = folder.path;
         option.textContent = getSeriesName(index);
+
         categorySelect.appendChild(option);
       });
 
@@ -493,9 +447,9 @@
 
       loadingMessage.textContent = t("loading");
       loadingMessage.classList.remove("hidden");
+
       errorMessage.classList.add("hidden");
       emptyMessage.classList.add("hidden");
-
       imageGrid.innerHTML = "";
 
       try {
@@ -518,6 +472,7 @@
 
       } catch (error) {
         console.error(error);
+
         loadingMessage.classList.add("hidden");
         errorMessage.textContent = t("loadError");
         errorMessage.classList.remove("hidden");
@@ -531,28 +486,18 @@
     function renderImages() {
       imageGrid.innerHTML = "";
 
-      const keyword = searchInput.value.trim().toLowerCase();
-
-      const filteredImages = currentImages.filter(file =>
-        file.name.toLowerCase().includes(keyword)
-      );
-
       imageCount.textContent =
-        `${filteredImages.length} ${t("imageCount")}`;
+        `${currentImages.length} ${t("imageCount")}`;
 
-      if (filteredImages.length === 0) {
-        emptyMessage.textContent =
-          currentImages.length === 0
-            ? t("noImages")
-            : t("noSearchResults");
-
+      if (currentImages.length === 0) {
+        emptyMessage.textContent = t("noImages");
         emptyMessage.classList.remove("hidden");
         return;
       }
 
       emptyMessage.classList.add("hidden");
 
-      filteredImages.forEach(file => {
+      currentImages.forEach(file => {
         const imageUrl = getRawUrl(file.path);
         const isSelected = selectedUrls.has(imageUrl);
 
@@ -610,13 +555,7 @@
     ========================= */
 
     function selectAllCurrentImages() {
-      const keyword = searchInput.value.trim().toLowerCase();
-
-      const filteredImages = currentImages.filter(file =>
-        file.name.toLowerCase().includes(keyword)
-      );
-
-      filteredImages.forEach(file => {
+      currentImages.forEach(file => {
         selectedUrls.add(getRawUrl(file.path));
       });
 
@@ -630,6 +569,7 @@
 
     function clearSelection() {
       selectedUrls.clear();
+
       renderImages();
       updateSelectedCount();
     }
@@ -671,12 +611,9 @@
       );
 
       if (folder) {
-        searchInput.value = "";
         await loadImagesInFolder(folder);
       }
     });
-
-    searchInput.addEventListener("input", renderImages);
 
     document
       .getElementById("selectAllButton")
